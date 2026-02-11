@@ -104,7 +104,7 @@ export function Scene() {
   };
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-full">
       <Canvas shadows gl={{ antialias: true }}>
         <PerspectiveCamera makeDefault position={[0, 5, 12]} />
         <OrbitControls enablePan={false} minDistance={5} maxDistance={25} />

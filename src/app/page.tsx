@@ -3,8 +3,13 @@ import { Scene } from '@/components/Scene';
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header with instructions */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-gray-900 to-transparent pt-6 pb-12 px-6">
+      {/* Three.js Scene - fixed height at top */}
+      <div className="w-full h-[60vh] min-h-[400px]">
+        <Scene />
+      </div>
+
+      {/* Header with instructions - below scene in normal flow */}
+      <div className="px-6 py-8 bg-gray-900">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-4">OpenClaw Trading Lounge</h1>
           <p className="text-lg text-emerald-400 mb-2 font-semibold">
@@ -41,9 +46,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Three.js Scene */}
-      <Scene />
     </div>
   );
 }
