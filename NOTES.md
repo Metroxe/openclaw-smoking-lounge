@@ -17,6 +17,71 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Deploy to VPS)
+**Task:** Deploy to the VPS accessible via `ssh openclaw-smoking-lounge`
+
+**Implementation:**
+- Installed Node.js v24.13.1 and npm v11.8.0 via NodeSource repository
+- Created deployment directory at ~/openclaw-smoking-lounge on VPS
+- Transferred project files using tar over SSH (excluded node_modules, .next, sqlite.db, .git)
+- Installed npm dependencies (470 packages)
+- Initialized SQLite database with `npm run db:push`
+- Built production app with `npm run build` (Next.js 16.1.6 with Turbopack)
+- Installed PM2 v5 globally for process management
+- Created PM2 ecosystem.config.js with production environment config
+- Started app with PM2 and configured systemd auto-restart on boot via `pm2 startup`
+- Installed and configured cron service
+- Added cron job running every minute: `* * * * * curl -s http://localhost:3000/api/cron/cleanup`
+- Verified all endpoints working (POST /api/join, GET /api/agents, GET /api/messages, GET /api/cron/cleanup)
+- Tested homepage loads correctly with Three.js scene
+
+**Deployment Details:**
+- VPS IP: 192.168.1.36
+- Port: 3000
+- App URL: http://192.168.1.36:3000
+- OS: Debian 12 (bookworm)
+- Process manager: PM2 with systemd integration
+- Database: SQLite at ~/openclaw-smoking-lounge/sqlite.db
+- User: ops
+- Working directory: /home/ops/openclaw-smoking-lounge
+
+**Testing:**
+- ✓ Homepage loads: http://192.168.1.36:3000/
+- ✓ POST /api/join with name only → returns success with agent data
+- ✓ POST /api/join with name + message → returns success with agent and message data
+- ✓ GET /api/agents → returns active agents with correct fields
+- ✓ GET /api/messages → returns messages with agentName join
+- ✓ Cron cleanup endpoint responds correctly
+- ✓ PM2 auto-restart configured with systemd
+- ✓ All Three.js assets load correctly
+
+**Decisions:**
+- Used PM2 instead of raw systemd service for easier process management and monitoring
+- Installed cron via apt (wasn't installed by default on Debian 12 minimal)
+- Used curl in cron instead of node script for simplicity (no dependencies)
+- Single PM2 instance (not clustered) since traffic is low for hackathon demo
+- No reverse proxy or domain setup yet (can be added later if needed)
+- Database file location: ~/openclaw-smoking-lounge/sqlite.db (same directory as app)
+- Kept PORT=3000 as default (no firewall configured yet)
+
+**Gotchas:**
+- Host key verification required on first SSH connection (used -o StrictHostKeyChecking=accept-new)
+- Node.js not installed by default on Debian 12 (installed via NodeSource)
+- Crontab command not found initially (had to install cron package)
+- Initial curl JSON testing had shell escaping issues (solved with echo + stdin piping)
+- PM2 logs don't show Next.js startup messages by default (used flush and nostream flags)
+- Turbopack build format makes debugging harder (chunked runtime modules)
+
+**Next run should know:**
+- Deployment is complete and working at http://192.168.1.36:3000
+- PM2 process name is "smoking-lounge"
+- To update deployment: ssh to VPS, cd ~/openclaw-smoking-lounge, git pull (if repo connected), npm install, npm run build, pm2 restart smoking-lounge
+- To check logs: `ssh openclaw-smoking-lounge "pm2 logs smoking-lounge"`
+- To check status: `ssh openclaw-smoking-lounge "pm2 status"`
+- Cron job logs to /dev/null (cleanup runs silently every minute)
+- Next task: Hackathon pivot (tie to DeFi/RobinPump theme)
+- No domain or SSL setup yet (HTTP only on local IP)
+
 ## Run — 2026-02-11 (Task: E2E Test with Real Agent)
 **Task:** Create E2E test that simulates a real OpenClaw agent interaction
 
