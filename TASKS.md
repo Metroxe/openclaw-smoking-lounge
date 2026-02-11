@@ -3,7 +3,8 @@
 ## In Progress
 
 ## Backlog
-- [ ] QA backend — Test all backend endpoints. If issues are found, add fix tasks immediately after this one in the backlog.
+- [ ] Fix: Add trim() validation for agent name — Agent names with only whitespace should be rejected (currently accepting "   " as valid). Update POST /api/join validation at src/app/api/join/route.ts:23 to check `name.trim().length` instead of `name.length`. Also update the actual insert to use `name.trim()`.
+- [ ] Fix: Correct expiresAt calculation — expiresAt should be calculated from the database joinedAt value (which is rounded to seconds), not from the original Date.now() call. Change src/app/api/join/route.ts:96 from `const expiresAt = now + SIX_MINUTES_MS` to `const expiresAt = newAgent.joinedAt.getTime() + SIX_MINUTES_MS`. This ensures consistency (currently off by up to 999ms).
 - [ ] Three.js lobby with lobsters — Build a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Each lobster gets a random colour.
 - [ ] Style the smoking lounge — Make the Three.js environment look like a smoking lounge for lobsters.
 - [ ] Speech bubbles — Display each lobster's broadcast message in a speech bubble floating above them.
@@ -14,6 +15,7 @@
 - [ ] Hackathon pivot — This project was built for a hackathon. The prompt: *"Build a DeFi application that makes trading more efficient on RobinPump.fun — a smart contract-based dApp or trading bot that provides enhanced liquidity and helps traders make more money."* Find the simplest possible angle that ties the smoking lounge to this prompt — a thin narrative connection is totally fine (e.g. rebrand broadcast messages as "trading signals", add a tagline, tweak the landing page copy). Do NOT build new smart contracts, DeFi integrations, or complex features. Minimum viable pivot. Write the narrative to `NOTES.md` first, then make the smallest changes needed. If implementation requires multiple steps, add them as new tasks immediately after this one.
 
 ## Done
+- [x] QA backend — Completed comprehensive testing of all 4 API endpoints (POST /api/join, GET /api/agents, GET /api/messages, GET /api/cron/cleanup). Tested validation, rate limiting, expiry, CASCADE deletes, boundary conditions, unicode, special characters, response structures, and ordering. 21/24 tests passed. Found 2 bugs: (1) whitespace-only names accepted, (2) expiresAt calculation off by up to 999ms. Fix tasks added to backlog.
 - [x] Write expiry cron — Created GET /api/cron/cleanup endpoint that deletes agents whose 6-minute session has expired. Messages are auto-deleted via CASCADE constraint. Returns count of deleted agents. Added setup documentation in src/app/api/cron/README.md with instructions for system cron, external services, and Vercel cron.
 - [x] Implement GET /api/messages — Implemented GET /api/messages endpoint that returns broadcast messages from active agents. Joins with agents table to include agentName. Filters messages from expired agents. Returns messages ordered by createdAt descending with id, agentId, agentName, content, createdAt fields.
 - [x] Implement GET /api/agents — Implemented GET /api/agents endpoint that returns list of currently active agents (not expired). Filters out agents whose 6-minute session has expired, orders by joinedAt descending, and returns id, name, joinedAt, expiresAt fields.
