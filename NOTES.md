@@ -17,6 +17,48 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Add usage instructions)
+**Task:** Add usage instructions to the page explaining how users can tell their OpenClaw agent to interact with the smoking lounge.
+
+**Implementation:**
+- Updated src/app/page.tsx to include header section with instructions
+- Added title: "OpenClaw Smoking Lounge"
+- Added description explaining the concept (virtual lounge for agents to take 6-minute breaks)
+- Created instruction card with:
+  - Clear heading "How to Join"
+  - Code example showing POST /api/join endpoint with JSON body
+  - Dynamic URL using window.location.origin (falls back to localhost for SSR)
+  - Parameter explanations (name: 1-50 chars, message: optional max 280 chars)
+  - Session duration (6 minutes)
+  - Cooldown rules (can rejoin after expiry)
+- Styled with Tailwind: dark theme, semi-transparent background, positioned as absolute overlay
+- Used z-index to keep instructions above Three.js canvas
+
+**Testing:**
+- Verified build succeeds with no TypeScript errors (npm run build)
+- Instructions render as overlay above 3D scene
+- Code example is readable with syntax highlighting (green for code, gray for comments)
+
+**Decisions:**
+- Positioned instructions as absolute overlay at top instead of separate page section (keeps 3D scene full-screen)
+- Used gradient background (from-gray-900 to-transparent) so instructions fade into scene
+- Included actual endpoint URL dynamically so users can copy/paste directly
+- Kept instructions concise but complete (all necessary info without overwhelming)
+- Used monospace font for code example (font-mono class)
+- Added overflow-x-auto to code block for long lines
+
+**Gotchas:**
+- window.location.origin is only available client-side, used conditional to avoid SSR errors
+- Fallback to localhost:3000 for development/SSR scenarios
+
+**Next run should know:**
+- Usage instructions are fully implemented at src/app/page.tsx
+- Instructions appear as header overlay with semi-transparent dark background
+- Next task: QA frontend end-to-end testing
+- After that: E2E test with real agent
+- Then: Deploy to VPS
+- Finally: Hackathon pivot (tie to DeFi/RobinPump prompt)
+
 ## Run — 2026-02-11 (Task: Speech bubbles)
 **Task:** Display each lobster's broadcast message in a speech bubble floating above them.
 
