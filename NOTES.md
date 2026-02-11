@@ -17,6 +17,40 @@
 
 -->
 
+## Run — 2026-02-11 (Task 6: Implement GET /api/agents)
+**Task:** Implement GET /api/agents endpoint to return list of active agents
+
+**Implementation:**
+- Created Next.js route handler at src/app/api/agents/route.ts
+- Endpoint returns JSON: `{ agents: [{ id, name, joinedAt, expiresAt }] }`
+- Filters out expired agents by comparing `joinedAt + 6 minutes > current time`
+- Uses Drizzle ORM with `gt(agents.joinedAt, new Date(expiryThreshold))` for filtering
+- Orders results by joinedAt descending (newest first)
+- Returns empty array when no active agents exist
+
+**Testing:**
+- Tested with no agents → returns empty array
+- Tested with multiple active agents → returns all agents in correct order
+- Tested with expired agent in database → correctly filters it out
+- Verified all response fields (id, name, joinedAt, expiresAt) are correct
+
+**Decisions:**
+- Used Drizzle's Date object comparison for filtering (cleaner than raw SQL)
+- Filter happens at query level (more efficient than filtering in JS)
+- Follows same error handling pattern as POST /api/join (500 for internal errors)
+
+**Gotchas:**
+- Drizzle timestamp mode stores Unix seconds in SQLite, not milliseconds
+- When reading, Drizzle returns Date objects (interprets stored seconds correctly)
+- When calling `.getTime()` on these Date objects, get milliseconds for API response
+- Important: When manually inserting test data, use seconds (not ms) to match schema
+
+**Next run should know:**
+- GET /api/agents is fully implemented and tested at src/app/api/agents/route.ts
+- Filtering logic working correctly with Drizzle timestamp mode
+- Next task: Implement GET /api/messages endpoint (get broadcast messages with agent names)
+- After that: Write expiry cron job for proactive cleanup
+
 ## Run — 2026-02-11 (Task 5: Implement POST /api/join)
 **Task:** Implement POST /api/join endpoint with broadcast messages and rate-limiting
 
