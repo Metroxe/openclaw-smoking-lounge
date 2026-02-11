@@ -17,6 +17,151 @@
 
 -->
 
+## Run — 2026-02-11 (Task 4: API Endpoint Design)
+**Task:** Design and document REST endpoints for OpenClaw agent interaction
+
+**API Specification:**
+
+### Endpoint: POST /api/join
+**Purpose:** Agent joins the smoking lounge for 6 minutes (average cigarette duration)
+
+**Request:**
+```json
+{
+  "name": "string (required, 1-50 chars)",
+  "message": "string (optional, max 280 chars, agent's broadcast message)"
+}
+```
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "agent": {
+    "id": "number",
+    "name": "string",
+    "joinedAt": "number (Unix timestamp ms)"
+  },
+  "message": {
+    "id": "number",
+    "content": "string",
+    "createdAt": "number"
+  } | null,
+  "expiresAt": "number (Unix timestamp ms, joinedAt + 6 minutes)"
+}
+```
+
+**Error Responses:**
+- `400` — Invalid request body (missing name, name too long, message too long)
+- `429` — Rate limited (agent joined within last 6 minutes)
+
+**Behaviors:**
+- If agent with same name exists and hasn't expired, treat as rejoin attempt → 429 error
+- If agent expired but still in DB, clean up old record and create new one
+- Message is optional; if not provided, agent joins silently
+- Agent and message both expire after 6 minutes from joinedAt timestamp
+
+---
+
+### Endpoint: GET /api/agents
+**Purpose:** List all currently active agents (for frontend to render lobsters)
+
+**Query Parameters:** None
+
+**Success Response (200):**
+```json
+{
+  "agents": [
+    {
+      "id": "number",
+      "name": "string",
+      "joinedAt": "number",
+      "expiresAt": "number"
+    }
+  ]
+}
+```
+
+**Behaviors:**
+- Returns only agents whose joinedAt + 6 minutes > current time
+- Automatically excludes expired agents (no need to pre-clean DB, but good to do)
+- Ordered by joinedAt descending (newest first)
+
+---
+
+### Endpoint: GET /api/messages
+**Purpose:** Get all current broadcast messages (for speech bubbles in frontend)
+
+**Query Parameters:** None
+
+**Success Response (200):**
+```json
+{
+  "messages": [
+    {
+      "id": "number",
+      "agentId": "number",
+      "agentName": "string",
+      "content": "string",
+      "createdAt": "number"
+    }
+  ]
+}
+```
+
+**Behaviors:**
+- Returns messages whose agent hasn't expired (joinedAt + 6 minutes > current time)
+- Joins with agents table to include agentName
+- Ordered by createdAt descending (newest first)
+
+---
+
+### Implementation Notes
+
+**Rate Limiting Logic:**
+- When POST /api/join receives a request, query DB for agent with matching name
+- If found and `joinedAt + 360000ms > Date.now()`, return 429
+- If found and expired, delete old record before creating new one
+- No complex session tokens or auth — simple name-based rate limiting
+
+**Expiry Strategy:**
+- Magic number: 360000ms = 6 minutes
+- Frontend should poll GET /api/agents and GET /api/messages every 5-10 seconds
+- Expired records cleaned up by:
+  1. Cron job running every minute (separate task)
+  2. Lazy cleanup on POST /api/join when agent rejoins
+  3. Filtering in GET endpoints (don't return expired data)
+
+**No Authentication for MVP:**
+- Endpoints are open — any agent can call them
+- Could add simple Bearer token later if abuse occurs
+- For hackathon, simplicity > security
+
+**Error Handling:**
+- Use standard HTTP status codes
+- Return JSON errors: `{ "error": "Error message" }`
+- Log errors server-side for debugging
+
+**Testing Strategy (for QA task):**
+- Manual cURL tests for each endpoint
+- Test rate limiting by calling /api/join twice rapidly
+- Test expiry by waiting 6 minutes and checking GET endpoints
+- Test message persistence and retrieval
+
+**Decisions:**
+- 6 minutes = 360000ms (average cigarette smoke time)
+- Message length capped at 280 chars (Twitter-style, keeps UI manageable)
+- Agent name length 1-50 chars (reasonable limits)
+- No PATCH/DELETE endpoints — agents auto-expire, manual eviction not needed
+- GET endpoints filter expired data instead of requiring pre-cleanup
+
+**Next run should know:**
+- API spec is now documented above
+- Next task: Implement POST /api/join endpoint
+- Use Next.js route handlers at src/app/api/join/route.ts
+- Import db and schema from src/db/index.ts and src/db/schema.ts
+- Return proper HTTP status codes and JSON responses
+
 ## Run — 2026-02-11 (Task 3: OpenClaw Integration Research)
 **Task:** Research OpenClaw integration — understand how to build services that OpenClaw agents can interact with
 
