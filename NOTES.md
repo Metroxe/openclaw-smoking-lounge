@@ -17,6 +17,29 @@
 
 -->
 
+## Run — 2026-02-11 (Task 2: SQLite + Drizzle setup)
+**Task:** Set up SQLite with Drizzle ORM and define initial schema (agents, messages)
+
+**Decisions:**
+- Used `better-sqlite3` as the SQLite driver (more performant than alternatives for Node.js)
+- Created two tables:
+  - `agents` table at src/db/schema.ts:6 with fields: id (auto-increment), name (unique), joinedAt (timestamp)
+  - `messages` table at src/db/schema.ts:14 with fields: id, agentId (FK to agents with cascade delete), content, createdAt
+- Used timestamp mode for date fields (stores Unix timestamp in milliseconds)
+- Added CASCADE delete on messages when agent is removed (so cleanup is automatic)
+- Database file location: `./sqlite.db` (root of project)
+- Added npm scripts: `db:generate`, `db:push`, `db:migrate`, `db:studio` for Drizzle operations
+
+**Gotchas:**
+- None encountered. Setup was straightforward.
+
+**Next run should know:**
+- Database connection is exported from src/db/index.ts as `db`
+- Schema is exported from src/db/schema.ts as `agents` and `messages`
+- SQLite database file (*.db) is gitignored
+- Migration files are in /drizzle directory (should be committed)
+- Next task: Research OpenClaw integration docs
+
 ## Run — 2026-02-11
 **Task:** Init Next.js project with TypeScript, Tailwind, and all defaults
 
