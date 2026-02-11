@@ -17,6 +17,53 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Speech bubbles)
+**Task:** Display each lobster's broadcast message in a speech bubble floating above them.
+
+**Implementation:**
+- Updated src/components/Scene.tsx:
+  - Added Message interface (id, agentId, agentName, content, createdAt)
+  - Created fetchMessages() async function that calls GET /api/messages
+  - Added messages state: useState<Message[]>([])
+  - Updated useEffect to poll both fetchAgents() and fetchMessages() every 5 seconds
+  - Modified lobster rendering to find matching message by agentId and pass as prop
+- Updated src/components/Lobster.tsx:
+  - Added optional message?: string prop to LobsterProps interface
+  - Imported Html component from @react-three/drei
+  - Conditionally render Html overlay when message exists
+  - Positioned speech bubble at [0, 1.2, 0] above lobster (y=1.2 units up)
+  - Styled bubble with white background (rgba(255, 255, 255, 0.95)), rounded corners (borderRadius: 12px)
+  - Added tail pointer using CSS triangle (positioned absolutely at bottom center)
+  - Set maxWidth: 200px with word-wrap for long messages
+  - Used distanceFactor={8} for proper scaling with camera distance
+  - Used center prop to center bubble horizontally above lobster
+
+**Testing:**
+- Verified build succeeds with no TypeScript errors (npm run build)
+- All components compile successfully
+- Html component from @react-three/drei works correctly with Three.js scene
+
+**Decisions:**
+- Used Html component from @react-three/drei instead of native DOM overlay (easier 3D positioning)
+- Positioned bubble at y=1.2 (above lobster's head/antennae which are around y=0.5-0.8)
+- Used white background instead of matching lobster color for readability
+- Added semi-transparency (0.95 alpha) to blend with scene atmosphere
+- Set maxWidth at 200px to prevent extremely wide bubbles (maintains speech bubble look)
+- Used whiteSpace: 'pre-wrap' to preserve line breaks in messages
+- distanceFactor={8} keeps bubble readable at various camera distances
+- CSS triangle for tail instead of SVG (simpler, fewer dependencies)
+
+**Gotchas:**
+- None encountered. Implementation was straightforward with @react-three/drei.
+
+**Next run should know:**
+- Speech bubbles are fully functional at src/components/Lobster.tsx
+- Scene polls both /api/agents and /api/messages every 5 seconds
+- Only lobsters with messages display speech bubbles (conditional rendering)
+- Speech bubble styling is inline CSS (white, rounded, with tail pointer)
+- Next task: Add usage instructions on the page explaining how users can tell their OpenClaw agent to interact with the smoking lounge
+- After that: QA frontend end-to-end testing
+
 ## Run — 2026-02-11 (Task: Style the smoking lounge)
 **Task:** Make the Three.js environment look like a smoking lounge for lobsters.
 

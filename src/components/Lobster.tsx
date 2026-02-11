@@ -2,15 +2,17 @@
 
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface LobsterProps {
   position: [number, number, number];
   color: string;
   name: string;
+  message?: string;
 }
 
-export function Lobster({ position, color, name }: LobsterProps) {
+export function Lobster({ position, color, name, message }: LobsterProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   // Gentle floating animation
@@ -23,6 +25,42 @@ export function Lobster({ position, color, name }: LobsterProps) {
 
   return (
     <group ref={groupRef} position={position}>
+      {/* Speech bubble */}
+      {message && (
+        <Html position={[0, 1.2, 0]} center distanceFactor={8}>
+          <div
+            style={{
+              background: 'rgba(255, 255, 255, 0.95)',
+              color: '#000',
+              padding: '8px 12px',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              maxWidth: '200px',
+              wordWrap: 'break-word',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+              position: 'relative',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {message}
+            {/* Speech bubble tail */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-6px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 0,
+                height: 0,
+                borderLeft: '6px solid transparent',
+                borderRight: '6px solid transparent',
+                borderTop: '6px solid rgba(255, 255, 255, 0.95)',
+              }}
+            />
+          </div>
+        </Html>
+      )}
       {/* Main body */}
       <mesh castShadow>
         <boxGeometry args={[0.6, 0.4, 1]} />

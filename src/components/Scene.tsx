@@ -13,6 +13,14 @@ interface Agent {
   expiresAt: number;
 }
 
+interface Message {
+  id: number;
+  agentId: number;
+  agentName: string;
+  content: string;
+  createdAt: number;
+}
+
 const COLORS = [
   '#FF6B6B', // Red
   '#4ECDC4', // Teal
@@ -33,13 +41,18 @@ function getRandomColor(): string {
 export function Scene() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [lobsterColors, setLobsterColors] = useState<Map<number, string>>(new Map());
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    // Fetch agents immediately
+    // Fetch agents and messages immediately
     fetchAgents();
+    fetchMessages();
 
     // Poll every 5 seconds
-    const interval = setInterval(fetchAgents, 5000);
+    const interval = setInterval(() => {
+      fetchAgents();
+      fetchMessages();
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -65,6 +78,19 @@ export function Scene() {
       }
     } catch (error) {
       console.error('Failed to fetch agents:', error);
+    }
+  }
+
+  async function fetchMessages() {
+    try {
+      const response = await fetch('/api/messages');
+      const data = await response.json();
+
+      if (data.messages) {
+        setMessages(data.messages);
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
     }
   }
 
@@ -206,14 +232,18 @@ export function Scene() {
         ))}
 
         {/* Render lobsters */}
-        {agents.map((agent, index) => (
-          <Lobster
-            key={agent.id}
-            position={getPosition(index, agents.length)}
-            color={lobsterColors.get(agent.id) || '#FF6B6B'}
-            name={agent.name}
-          />
-        ))}
+        {agents.map((agent, index) => {
+          const message = messages.find((msg) => msg.agentId === agent.id);
+          return (
+            <Lobster
+              key={agent.id}
+              position={getPosition(index, agents.length)}
+              color={lobsterColors.get(agent.id) || '#FF6B6B'}
+              name={agent.name}
+              message={message?.content}
+            />
+          );
+        })}
       </Canvas>
     </div>
   );
