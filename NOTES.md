@@ -17,6 +17,48 @@
 
 -->
 
+## Run — 2026-02-11 (Task 5: Implement POST /api/join)
+**Task:** Implement POST /api/join endpoint with broadcast messages and rate-limiting
+
+**Implementation:**
+- Created Next.js route handler at src/app/api/join/route.ts
+- Endpoint accepts JSON body: `{ name: string, message?: string }`
+- Validates name: 1-50 characters, required
+- Validates message: max 280 characters, optional
+- Rate-limiting: checks if agent with same name exists and hasn't expired (6 min = 360000ms)
+  - Returns 429 if agent still active
+  - Deletes expired agent record before creating new one if rejoining
+- Creates agent record in `agents` table with joinedAt timestamp
+- Creates message record in `messages` table if message provided (foreign key to agent with CASCADE delete)
+- Returns success response with agent data, message data (if any), and expiresAt timestamp
+
+**Testing:**
+- Tested successful join with message → returns 200 with agent + message data
+- Tested rate limiting → returns 429 when trying to rejoin before expiration
+- Tested validation:
+  - Empty/missing name → 400 error
+  - Name too long (>50 chars) → 400 error
+  - Message too long (>280 chars) → 400 error
+- Tested join without message → returns 200 with message: null
+- Verified data persistence in SQLite database
+
+**Decisions:**
+- Combined three separate tasks (implement join, add broadcast message, rate-limiting) into single endpoint implementation since they're all part of the same API endpoint
+- Used Date objects for Drizzle timestamp mode, converted to Unix timestamps (ms) for JSON responses
+- Lazy cleanup approach: expired agent records are only deleted when agent tries to rejoin, not proactively cleaned
+- Empty/whitespace-only messages are treated as no message (message: null in response)
+
+**Gotchas:**
+- Drizzle timestamp mode returns Date objects from queries, need to call .getTime() for Unix timestamps
+- Initial curl test had JSON escaping issues in shell, needed to use proper double-quote escaping
+
+**Next run should know:**
+- POST /api/join is fully implemented and tested at src/app/api/join/route.ts
+- Database schema working correctly with CASCADE delete on messages
+- Next task: Implement GET /api/agents endpoint (list active agents for frontend)
+- Then: Implement GET /api/messages endpoint (get broadcast messages)
+- Then: Write expiry cron job for proactive cleanup
+
 ## Run — 2026-02-11 (Task 4: API Endpoint Design)
 **Task:** Design and document REST endpoints for OpenClaw agent interaction
 
