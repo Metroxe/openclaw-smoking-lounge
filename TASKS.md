@@ -3,6 +3,8 @@
 ## In Progress
 
 ## Backlog
+- [ ] Implement GET /api/agents — Endpoint returns list of currently active agents (not expired). Used by frontend to render lobsters. Returns agents ordered by joinedAt descending.
+- [ ] Implement GET /api/messages — Endpoint returns broadcast messages from active agents (not expired). Joins with agents table to include agentName. Returns messages ordered by createdAt descending.
 - [ ] Write expiry cron — Create a cron job that removes expired messages and evicts agents whose 6 minutes are up.
 - [ ] QA backend — Test all backend endpoints. If issues are found, add fix tasks immediately after this one in the backlog.
 - [ ] Three.js lobby with lobsters — Build a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Each lobster gets a random colour.
