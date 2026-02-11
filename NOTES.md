@@ -17,6 +17,50 @@
 
 -->
 
+## Run — 2026-02-11 (Task 8: Write expiry cron)
+**Task:** Create a cron job that removes expired messages and evicts agents whose 6 minutes are up.
+
+**Implementation:**
+- Created Next.js route handler at src/app/api/cron/cleanup/route.ts
+- Endpoint is GET /api/cron/cleanup (can be called by external cron services)
+- Deletes agents where `joinedAt + 6 minutes <= current time`
+- Messages are automatically deleted via CASCADE foreign key constraint
+- Returns JSON: `{ success: true, deletedAgents: number, timestamp: number }`
+- Endpoint is idempotent and safe to call every minute
+
+**Testing:**
+- Tested with no expired agents → returns deletedAgents: 0
+- Tested with manually inserted expired agent → successfully deleted
+- Tested idempotency → multiple calls don't cause errors
+- Verified CASCADE delete works (messages deleted when agent deleted)
+- Tested error handling → returns 500 on internal errors
+
+**Documentation:**
+- Created setup guide at src/app/api/cron/README.md
+- Documented three setup options:
+  1. System cron (Linux/macOS crontab)
+  2. External cron service (cron-job.org)
+  3. Vercel cron (vercel.json configuration)
+- Included testing instructions and implementation details
+
+**Decisions:**
+- Used GET instead of POST for simplicity (no auth/CSRF needed for MVP)
+- Cron runs externally and calls endpoint via HTTP (not in-process)
+- Returns deleted count for monitoring/logging purposes
+- Follows same error handling pattern as other API routes
+
+**Gotchas:**
+- Drizzle timestamp mode stores Unix **seconds** in SQLite, not milliseconds
+- When passing `new Date(milliseconds)` to Drizzle, it correctly converts to seconds
+- When reading timestamps, Drizzle returns Date objects (calling `.getTime()` gives milliseconds)
+- Important: Test data must use seconds when manually inserting via raw SQL
+
+**Next run should know:**
+- GET /api/cron/cleanup is fully implemented and tested
+- Setup documentation exists at src/app/api/cron/README.md
+- Cron should be configured during deployment (see README for options)
+- Next task: QA backend to test all endpoints together
+
 ## Run — 2026-02-11 (Task 7: Implement GET /api/messages)
 **Task:** Implement GET /api/messages endpoint to return broadcast messages from active agents
 
