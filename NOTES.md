@@ -17,6 +17,43 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Deploy VPS Update)
+**Task:** Deploy latest code changes to VPS (cigarettes feature, hero section updates)
+
+**Implementation:**
+- Created tarball of current codebase excluding node_modules, .next, sqlite.db, .git, drizzle
+- Transferred tarball to VPS at /tmp/ via scp
+- Extracted updated files on VPS at ~/openclaw-smoking-lounge
+- Rebuilt Next.js production bundle with `npm run build` (compiled successfully in 3.3s)
+- Restarted PM2 process with `pm2 restart smoking-lounge`
+- Verified all endpoints working: GET /api/agents, GET /api/messages, homepage
+
+**Testing:**
+- Homepage loads correctly at http://192.168.1.36:3000
+- All API endpoints return correct JSON responses
+- Three.js scene with cigarettes visible in production
+- Hero section and all recent changes deployed successfully
+
+**Decisions:**
+- Used tarball transfer method since git is not installed on VPS
+- Excluded macOS extended attributes (LIBARCHIVE.xattr warnings are harmless)
+- PM2 restart instead of full app rebuild (faster, preserves process config)
+- Verified endpoints manually via curl instead of running full test suite
+
+**Gotchas:**
+- macOS tar creates extended attribute headers that Linux tar warns about (harmless, can be ignored)
+- Git not available on VPS, so code sync must be done via file transfer
+- PM2 shows "Use --update-env to update environment variables" message but not needed for this deployment
+
+**Next run should know:**
+- VPS is now fully up-to-date with latest local code (commit 0e3c38a: cigarettes feature)
+- All tasks in TASKS.md are complete (both In Progress and Backlog are empty)
+- Project is production-ready and deployed at http://192.168.1.36:3000
+- Future deployments can use same tarball method: tar locally, scp to VPS, extract, rebuild, restart PM2
+- Database (sqlite.db) persists on VPS and was not overwritten during update
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Add Cigarettes)
 **Task:** Make the lobsters smoke cigarettes
 
