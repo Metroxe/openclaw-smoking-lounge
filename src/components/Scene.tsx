@@ -3,7 +3,8 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import { Lobster } from './Lobster';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import * as THREE from 'three';
 
 interface Agent {
   id: number;
@@ -78,26 +79,131 @@ export function Scene() {
 
   return (
     <div className="w-full h-screen">
-      <Canvas shadows>
-        <PerspectiveCamera makeDefault position={[0, 5, 10]} />
-        <OrbitControls enablePan={false} minDistance={5} maxDistance={20} />
+      <Canvas shadows gl={{ antialias: true }}>
+        <PerspectiveCamera makeDefault position={[0, 5, 12]} />
+        <OrbitControls enablePan={false} minDistance={5} maxDistance={25} />
 
-        {/* Lighting */}
-        <ambientLight intensity={0.4} />
+        {/* Ambient warm lighting (dim, cozy atmosphere) */}
+        <ambientLight intensity={0.2} color="#FFD1A3" />
+
+        {/* Main overhead light (warm, soft) */}
         <directionalLight
-          position={[5, 10, 5]}
-          intensity={1}
+          position={[0, 8, 0]}
+          intensity={0.6}
+          color="#FFCC99"
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
+          shadow-camera-left={-15}
+          shadow-camera-right={15}
+          shadow-camera-top={15}
+          shadow-camera-bottom={-15}
         />
-        <pointLight position={[-5, 5, -5]} intensity={0.5} />
 
-        {/* Floor */}
+        {/* Corner accent lights (warm glow) */}
+        <pointLight position={[-8, 3, -8]} intensity={0.4} color="#FF9966" distance={15} />
+        <pointLight position={[8, 3, -8]} intensity={0.4} color="#FF9966" distance={15} />
+        <pointLight position={[-8, 3, 8]} intensity={0.3} color="#FFAA77" distance={15} />
+        <pointLight position={[8, 3, 8]} intensity={0.3} color="#FFAA77" distance={15} />
+
+        {/* Fog for smoky atmosphere */}
+        <fog attach="fog" args={['#1A1410', 10, 30]} />
+
+        {/* Floor - dark wood planks */}
         <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
-          <planeGeometry args={[50, 50]} />
-          <meshStandardMaterial color="#2C3E50" />
+          <planeGeometry args={[30, 30]} />
+          <meshStandardMaterial
+            color="#3D2A1F"
+            roughness={0.8}
+            metalness={0.1}
+          />
         </mesh>
+
+        {/* Walls - wood paneling */}
+        {/* Back wall */}
+        <mesh position={[0, 4.5, -15]} receiveShadow>
+          <boxGeometry args={[30, 10, 0.5]} />
+          <meshStandardMaterial color="#4A3525" roughness={0.9} />
+        </mesh>
+
+        {/* Left wall */}
+        <mesh position={[-15, 4.5, 0]} receiveShadow>
+          <boxGeometry args={[0.5, 10, 30]} />
+          <meshStandardMaterial color="#4A3525" roughness={0.9} />
+        </mesh>
+
+        {/* Right wall */}
+        <mesh position={[15, 4.5, 0]} receiveShadow>
+          <boxGeometry args={[0.5, 10, 30]} />
+          <meshStandardMaterial color="#4A3525" roughness={0.9} />
+        </mesh>
+
+        {/* Ceiling */}
+        <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
+          <planeGeometry args={[30, 30]} />
+          <meshStandardMaterial color="#2B1F17" roughness={0.95} />
+        </mesh>
+
+        {/* Central table (round) */}
+        <group position={[0, -0.5, 0]}>
+          {/* Table top */}
+          <mesh castShadow receiveShadow position={[0, 0.5, 0]}>
+            <cylinderGeometry args={[2.5, 2.5, 0.1, 32]} />
+            <meshStandardMaterial color="#5C3D2E" roughness={0.6} metalness={0.2} />
+          </mesh>
+          {/* Table leg */}
+          <mesh castShadow receiveShadow position={[0, 0, 0]}>
+            <cylinderGeometry args={[0.15, 0.3, 0.9, 16]} />
+            <meshStandardMaterial color="#3D2A1F" roughness={0.8} />
+          </mesh>
+        </group>
+
+        {/* Ashtrays on table (4 positioned around table) */}
+        {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((angle, i) => {
+          const x = Math.cos(angle) * 1.8;
+          const z = Math.sin(angle) * 1.8;
+          return (
+            <group key={i} position={[x, 0.05, z]}>
+              {/* Ashtray base */}
+              <mesh castShadow receiveShadow>
+                <cylinderGeometry args={[0.15, 0.12, 0.05, 16]} />
+                <meshStandardMaterial color="#1A1A1A" roughness={0.3} metalness={0.7} />
+              </mesh>
+            </group>
+          );
+        })}
+
+        {/* Wall sconces (decorative light fixtures) */}
+        {[-10, 0, 10].map((x, i) => (
+          <group key={`sconce-back-${i}`} position={[x, 5, -14.5]}>
+            <mesh castShadow>
+              <boxGeometry args={[0.3, 0.6, 0.2]} />
+              <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
+            </mesh>
+            <pointLight position={[0, 0, 0.5]} intensity={0.3} color="#FFAA66" distance={4} />
+          </group>
+        ))}
+
+        {/* Side wall sconces */}
+        {[-10, 0, 10].map((z, i) => (
+          <group key={`sconce-left-${i}`} position={[-14.5, 5, z]}>
+            <mesh castShadow>
+              <boxGeometry args={[0.2, 0.6, 0.3]} />
+              <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
+            </mesh>
+            <pointLight position={[0.5, 0, 0]} intensity={0.25} color="#FFAA66" distance={4} />
+          </group>
+        ))}
+
+        {[-10, 0, 10].map((z, i) => (
+          <group key={`sconce-right-${i}`} position={[14.5, 5, z]}>
+            <mesh castShadow>
+              <boxGeometry args={[0.2, 0.6, 0.3]} />
+              <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
+            </mesh>
+            <pointLight position={[-0.5, 0, 0]} intensity={0.25} color="#FFAA66" distance={4} />
+          </group>
+        ))}
 
         {/* Render lobsters */}
         {agents.map((agent, index) => (

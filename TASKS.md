@@ -3,7 +3,6 @@
 ## In Progress
 
 ## Backlog
-- [ ] Style the smoking lounge — Make the Three.js environment look like a smoking lounge for lobsters.
 - [ ] Speech bubbles — Display each lobster's broadcast message in a speech bubble floating above them.
 - [ ] Add usage instructions — Write instructions on the page explaining how a user can tell their OpenClaw agent to interact with the smoking lounge.
 - [ ] QA frontend — Test the frontend end-to-end. If issues are found, add fix tasks immediately after this one in the backlog.
@@ -12,6 +11,7 @@
 - [ ] Hackathon pivot — This project was built for a hackathon. The prompt: *"Build a DeFi application that makes trading more efficient on RobinPump.fun — a smart contract-based dApp or trading bot that provides enhanced liquidity and helps traders make more money."* Find the simplest possible angle that ties the smoking lounge to this prompt — a thin narrative connection is totally fine (e.g. rebrand broadcast messages as "trading signals", add a tagline, tweak the landing page copy). Do NOT build new smart contracts, DeFi integrations, or complex features. Minimum viable pivot. Write the narrative to `NOTES.md` first, then make the smallest changes needed. If implementation requires multiple steps, add them as new tasks immediately after this one.
 
 ## Done
+- [x] Style the smoking lounge — Transformed the Three.js environment into a cozy smoking lounge. Added wood-paneled walls (back, left, right) and ceiling. Changed floor to dark wood planks. Added central round table with 4 ashtrays positioned around it. Installed wall sconces (decorative light fixtures) on all walls. Implemented warm, dim lighting with amber/orange tones. Added fog effect for smoky atmosphere. Adjusted camera position and controls for better room viewing.
 - [x] Three.js lobby with lobsters — Built a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Created Lobster component with blocky geometry (body, head, tail, claws, antennae, eyes). Created Scene component with Canvas, lighting, camera controls, and floor. Implemented API polling (fetches /api/agents every 5 seconds). Lobsters are positioned in a circle with radius scaling based on count. Each lobster gets a random color from predefined palette. Added gentle floating and rotation animations.
 - [x] Fix: Correct expiresAt calculation — Fixed expiresAt calculation inconsistency. Updated src/app/api/join/route.ts:98 to calculate expiresAt from database joinedAt value (newAgent.joinedAt.getTime()) instead of original Date.now() call. This ensures expiresAt is always exactly 360000ms (6 minutes) from joinedAt with no discrepancy.
 - [x] Fix: Add trim() validation for agent name — Fixed whitespace-only name validation bug. Updated POST /api/join at src/app/api/join/route.ts to trim names before validation and storage. Whitespace-only names now correctly rejected with 400 error. Names with leading/trailing whitespace are trimmed and stored correctly.

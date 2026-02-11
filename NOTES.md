@@ -17,6 +17,59 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Style the smoking lounge)
+**Task:** Make the Three.js environment look like a smoking lounge for lobsters.
+
+**Implementation:**
+- Updated src/components/Scene.tsx with full smoking lounge environment
+- Added room structure:
+  - 4 walls (back, left, right at position ±15, plus ceiling at height 10)
+  - All walls use dark brown wood paneling (#4A3525 color, high roughness)
+  - Floor changed from gray to dark wood planks (#3D2A1F)
+  - Room dimensions: 30x30x10 (width x depth x height)
+- Added central round table:
+  - Table top: 2.5 radius cylinder at height 0.5, wood color (#5C3D2E)
+  - Table leg: tapered cylinder (0.15 top, 0.3 bottom, 0.9 height)
+  - 4 ashtrays positioned around table at 1.8 radius (black metal, cylindrical)
+- Implemented warm, cozy lighting:
+  - Ambient light: 0.2 intensity, warm color (#FFD1A3)
+  - Main directional light: overhead, 0.6 intensity, warm (#FFCC99)
+  - 4 corner point lights: warm orange glow (#FF9966, #FFAA77)
+  - 9 wall sconces (3 per wall): decorative brass fixtures with point lights (#FFAA66)
+- Added atmospheric fog: brown/gray (#1A1410), starts at 10, ends at 30
+- Updated camera position to [0, 5, 12] and maxDistance to 25 for better room viewing
+- Adjusted shadow map size and camera bounds for proper shadow coverage
+
+**Testing:**
+- Verified build succeeds with no TypeScript errors
+- All meshes use proper materials with roughness/metalness for realistic look
+- Lighting setup creates dim, cozy atmosphere (not too bright)
+- Fog effect adds smoky, atmospheric depth
+- Room fully enclosed with walls and ceiling (no open edges)
+
+**Decisions:**
+- Used warm orange/amber colors (#FF9966, #FFCC99, #FFD1A3) for all lighting to create cozy mood
+- Kept lighting intensity low (0.2-0.6 range) for dim, intimate atmosphere
+- Positioned sconces at regular intervals (every 10 units) for balanced lighting
+- Made table large enough (2.5 radius) to be central focal point
+- Used cylindrical geometry for table (more lounge-like than rectangular)
+- Added ashtrays as small details to reinforce smoking lounge theme
+- Fog color matches floor/wall tones for cohesive atmosphere
+
+**Gotchas:**
+- Fog requires specific color matching or it looks out of place (used dark brown #1A1410)
+- Point lights need `distance` parameter or they illuminate too broadly
+- Wall sconces need small point lights positioned in front of mesh (0.5 offset) to simulate glow
+- Shadow camera bounds must cover entire room or shadows will clip
+
+**Next run should know:**
+- Smoking lounge environment is fully styled at src/components/Scene.tsx
+- Room has walls, ceiling, floor, central table, ashtrays, wall sconces, and atmospheric fog
+- Lighting is warm and dim (cozy smoking lounge ambiance)
+- Lobsters still render in circle around central table (from previous task)
+- Next task: Add speech bubbles to display broadcast messages above lobsters
+- After that: Add usage instructions on the page
+
 ## Run — 2026-02-11 (Task: Three.js lobby with lobsters)
 **Task:** Build a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Each lobster gets a random color.
 
