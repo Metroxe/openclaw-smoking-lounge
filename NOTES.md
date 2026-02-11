@@ -17,6 +17,90 @@
 
 -->
 
+## Run — 2026-02-11 (Task 3: OpenClaw Integration Research)
+**Task:** Research OpenClaw integration — understand how to build services that OpenClaw agents can interact with
+
+**Research Findings:**
+
+### OpenClaw Overview
+- Open-source, local-first personal AI assistant and agent framework
+- 68,000+ GitHub stars, created by Peter Steinberger (PSPDFKit founder)
+- Supports multi-agent routing, multi-channel messaging (WhatsApp, Telegram, Slack, Discord, etc.)
+- Integrates with 50+ third-party services
+
+### Integration Methods for External Services
+
+**1. Webhook Endpoints (Recommended for Smoking Lounge)**
+OpenClaw agents can trigger external services via HTTP webhooks. Gateway exposes endpoints:
+
+- `/hooks/wake` — System events, triggers heartbeat (200 response)
+  - Required: `text` (string) — event description
+  - Optional: `mode` (`now` or `next-heartbeat`)
+
+- `/hooks/agent` — Isolated agent runs (202 async response)
+  - Required: `message` (string) — prompt for agent
+  - Optional: `agentId`, `sessionKey`, `deliver`, `channel`, `model`, `timeoutSeconds`
+
+- `/hooks/<name>` — Custom mapped endpoints via config
+
+**Authentication:** Shared secret token via:
+- `Authorization: Bearer <token>` (recommended)
+- `x-openclaw-token: <token>` header
+- `?token=<token>` query param (deprecated)
+
+**Example:**
+```bash
+curl -X POST http://127.0.0.1:18789/hooks/agent \
+  -H 'x-openclaw-token: SECRET' \
+  -d '{"message":"Summarize inbox","name":"Email"}'
+```
+
+**2. Skills System (More Complex, Not Needed for MVP)**
+- Skills are directories with SKILL.md files (YAML frontmatter + instructions)
+- Loaded from bundled/managed/workspace locations
+- Can reference custom HTTP endpoints via config
+- Discoverable via ClawHub registry (https://clawhub.com)
+- Requires npm package/SDK setup for complex integrations
+
+### Recommended Architecture for Smoking Lounge
+
+**For OpenClaw agents to interact with the smoking lounge, we should build:**
+
+1. **REST API endpoints** that agents can call via HTTP requests (not webhooks FROM OpenClaw, but TO our service)
+2. **Simple skill definition** (optional, for discoverability) that tells agents how to use our endpoints
+3. **No authentication complexity** for MVP — simple token or open endpoints fine for hackathon
+
+**Agent workflow:**
+1. Agent executes skill or receives instruction: "Join the smoking lounge at <URL>"
+2. Agent makes HTTP POST to `/api/join` with `{ name: "AgentName", message: "Optional broadcast" }`
+3. Service stores agent in SQLite, returns success
+4. Frontend polls or uses SSE to display active agents as lobsters
+
+**Key insight:** We're building a service that OpenClaw agents consume (like any REST API), NOT building an OpenClaw skill package or webhook consumer. Agents will use standard HTTP tools/capabilities to call our endpoints.
+
+**Decisions:**
+- Use standard REST API approach (POST /api/join, GET /api/agents, etc.) instead of complex webhook/skill system
+- Keep authentication simple for MVP (API key or open endpoints)
+- Agents interact via HTTP requests they initiate, not via OpenClaw Gateway webhooks
+- Optional: Create SKILL.md file later for ClawHub discoverability, but not required for functionality
+
+**Gotchas:**
+- Initial confusion about direction of integration — we're building a service agents call, not a webhook consumer
+- Webhook system is for triggering OpenClaw agents FROM external events, not relevant for our use case
+
+**Next run should know:**
+- Next task is to design API endpoints based on this understanding
+- Focus on: POST /api/join (with rate limiting), GET /api/agents (active agents), automatic expiry after 6min
+- Consider adding GET /api/messages endpoint for frontend polling
+- Authentication can be simple or omitted for MVP
+
+**Sources:**
+- [OpenClaw Webhooks Documentation](https://docs.openclaw.ai/automation/webhook)
+- [OpenClaw Skills Documentation](https://docs.openclaw.ai/tools/skills)
+- [OpenClaw GitHub Repository](https://github.com/openclaw/openclaw)
+- [What is OpenClaw? (DigitalOcean)](https://www.digitalocean.com/resources/articles/what-is-openclaw)
+- [OpenClaw Custom Skill Creation Guide](https://zenvanriel.nl/ai-engineer-blog/openclaw-custom-skill-creation-guide/)
+
 ## Run — 2026-02-11 (Task 2: SQLite + Drizzle setup)
 **Task:** Set up SQLite with Drizzle ORM and define initial schema (agents, messages)
 
