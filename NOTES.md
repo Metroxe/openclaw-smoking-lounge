@@ -17,6 +17,57 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Brighten Lounge)
+**Task:** Improve smoking lounge lighting and decorations — make it less dark and cooler
+
+**Implementation:**
+- Updated src/components/Scene.tsx with significantly brighter lighting
+- Increased ambient light intensity: 0.2 → 0.4, changed color from #FFD1A3 to #FFE4B5 (lighter)
+- Increased directional light intensity: 0.6 → 1.0 (main overhead light)
+- Increased corner point light intensities: 0.4 → 0.8 and 0.3 → 0.7
+- Added 5 new overhead chandelier lights: center at intensity 1.2, four surrounding at 0.6 each
+- Reduced fog density and pushed it further back: args changed from ['#1A1410', 10, 30] to ['#2A1F1A', 15, 35]
+- Added decorative bar counter along back wall at z=-13 with:
+  - Dark wood counter top and front panel
+  - Two shelves with bottles/glasses implied
+  - Three colored back-lights (cyan, magenta, green/teal) for atmosphere
+- Added 5 bar stools in front of bar with cylindrical seats, tapered legs, and torus footrests
+- Added central chandelier at y=7.5 with:
+  - Golden center column (cylindrical)
+  - 4 arms extending outward in cardinal directions
+  - Light bulb spheres at end of each arm with emissive material
+  - Point lights at each bulb position
+- Added neon sign on back wall at y=7 with pink (#FF1493) emissive glow
+- Added 6 colorful wall art/posters on side walls (3 per side) in various colors
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 4.4s
+- All new Three.js geometries and materials compile correctly
+
+**Decisions:**
+- Increased light intensities significantly across the board to combat darkness
+- Used colored lights (cyan, magenta, pink, golden) to make scene more vibrant and "cooler"
+- Added bar furniture to make it feel more like a lounge vs just an empty room
+- Chandelier provides strong central lighting plus visual interest
+- Fog pushed further back (starts at 15 instead of 10) so nearby objects are more visible
+- Wall art adds color pops to break up monotonous brown walls
+- Bar back-lighting creates atmosphere similar to real bar/lounge aesthetic
+
+**Gotchas:**
+- None encountered. Three.js geometry creation was straightforward.
+
+**Next run should know:**
+- Lounge is now significantly brighter and more decorated with bar, stools, chandelier, neon sign, and wall art
+- All improvements made in src/components/Scene.tsx
+- Both "In Progress" and "Backlog" sections in TASKS.md are now empty
+- No tasks remaining — project is complete
+- VPS deployment at http://192.168.1.36:3000 will need rebuild to see new lighting/decorations
+- To update VPS: tarball transfer method or `git pull && npm run build && pm2 restart smoking-lounge`
+
+---
+
+
 ## Run — 2026-02-11 (Ralph Loop - Deploy VPS Update)
 **Task:** Deploy latest code changes to VPS (cigarettes feature, hero section updates)
 

@@ -109,13 +109,13 @@ export function Scene() {
         <PerspectiveCamera makeDefault position={[0, 5, 12]} />
         <OrbitControls enablePan={false} minDistance={5} maxDistance={25} />
 
-        {/* Ambient warm lighting (dim, cozy atmosphere) */}
-        <ambientLight intensity={0.2} color="#FFD1A3" />
+        {/* Ambient warm lighting (brighter, welcoming atmosphere) */}
+        <ambientLight intensity={0.4} color="#FFE4B5" />
 
-        {/* Main overhead light (warm, soft) */}
+        {/* Main overhead light (warm, brighter) */}
         <directionalLight
           position={[0, 8, 0]}
-          intensity={0.6}
+          intensity={1.0}
           color="#FFCC99"
           castShadow
           shadow-mapSize-width={2048}
@@ -126,14 +126,21 @@ export function Scene() {
           shadow-camera-bottom={-15}
         />
 
-        {/* Corner accent lights (warm glow) */}
-        <pointLight position={[-8, 3, -8]} intensity={0.4} color="#FF9966" distance={15} />
-        <pointLight position={[8, 3, -8]} intensity={0.4} color="#FF9966" distance={15} />
-        <pointLight position={[-8, 3, 8]} intensity={0.3} color="#FFAA77" distance={15} />
-        <pointLight position={[8, 3, 8]} intensity={0.3} color="#FFAA77" distance={15} />
+        {/* Corner accent lights (warm glow, brighter) */}
+        <pointLight position={[-8, 3, -8]} intensity={0.8} color="#FF9966" distance={15} />
+        <pointLight position={[8, 3, -8]} intensity={0.8} color="#FF9966" distance={15} />
+        <pointLight position={[-8, 3, 8]} intensity={0.7} color="#FFAA77" distance={15} />
+        <pointLight position={[8, 3, 8]} intensity={0.7} color="#FFAA77" distance={15} />
 
-        {/* Fog for smoky atmosphere */}
-        <fog attach="fog" args={['#1A1410', 10, 30]} />
+        {/* Overhead chandelier lights */}
+        <pointLight position={[0, 7, 0]} intensity={1.2} color="#FFD700" distance={12} />
+        <pointLight position={[-5, 6, -5]} intensity={0.6} color="#FFA500" distance={10} />
+        <pointLight position={[5, 6, -5]} intensity={0.6} color="#FFA500" distance={10} />
+        <pointLight position={[-5, 6, 5]} intensity={0.6} color="#FFA500" distance={10} />
+        <pointLight position={[5, 6, 5]} intensity={0.6} color="#FFA500" distance={10} />
+
+        {/* Fog for smoky atmosphere (lighter, less dense) */}
+        <fog attach="fog" args={['#2A1F1A', 15, 35]} />
 
         {/* Floor - dark wood planks */}
         <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
@@ -199,6 +206,95 @@ export function Scene() {
           );
         })}
 
+        {/* Bar counter along back wall */}
+        <group position={[0, 0, -13]}>
+          {/* Bar counter top */}
+          <mesh castShadow receiveShadow position={[0, 1.2, 0]}>
+            <boxGeometry args={[12, 0.15, 1.5]} />
+            <meshStandardMaterial color="#654321" roughness={0.3} metalness={0.4} />
+          </mesh>
+          {/* Bar front panel */}
+          <mesh castShadow receiveShadow position={[0, 0.5, 0.75]}>
+            <boxGeometry args={[12, 1.5, 0.1]} />
+            <meshStandardMaterial color="#3D2A1F" roughness={0.8} />
+          </mesh>
+          {/* Bar shelves */}
+          <mesh castShadow position={[0, 2.5, -0.5]}>
+            <boxGeometry args={[11, 0.1, 0.4]} />
+            <meshStandardMaterial color="#5C3D2E" roughness={0.6} />
+          </mesh>
+          <mesh castShadow position={[0, 3.2, -0.5]}>
+            <boxGeometry args={[11, 0.1, 0.4]} />
+            <meshStandardMaterial color="#5C3D2E" roughness={0.6} />
+          </mesh>
+          {/* Bar back lighting */}
+          <pointLight position={[0, 2.5, -0.8]} intensity={0.8} color="#00FFFF" distance={8} />
+          <pointLight position={[-4, 2.5, -0.8]} intensity={0.6} color="#FF00FF" distance={6} />
+          <pointLight position={[4, 2.5, -0.8]} intensity={0.6} color="#00FF88" distance={6} />
+        </group>
+
+        {/* Bar stools */}
+        {[-4, -2, 0, 2, 4].map((x, i) => (
+          <group key={`barstool-${i}`} position={[x, -0.5, -11]}>
+            {/* Stool seat */}
+            <mesh castShadow receiveShadow position={[0, 1.0, 0]}>
+              <cylinderGeometry args={[0.35, 0.35, 0.1, 16]} />
+              <meshStandardMaterial color="#8B4513" roughness={0.6} />
+            </mesh>
+            {/* Stool leg */}
+            <mesh castShadow position={[0, 0.45, 0]}>
+              <cylinderGeometry args={[0.08, 0.12, 1.0, 8]} />
+              <meshStandardMaterial color="#2C1810" roughness={0.7} />
+            </mesh>
+            {/* Footrest ring */}
+            <mesh position={[0, 0.3, 0]} rotation={[0, 0, 0]}>
+              <torusGeometry args={[0.25, 0.04, 8, 16]} />
+              <meshStandardMaterial color="#3D2A1F" roughness={0.8} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* Neon sign on back wall */}
+        <group position={[0, 7, -14.8]}>
+          <mesh>
+            <boxGeometry args={[6, 1.5, 0.1]} />
+            <meshStandardMaterial
+              color="#000000"
+              emissive="#FF1493"
+              emissiveIntensity={0.3}
+              roughness={0.9}
+            />
+          </mesh>
+          <pointLight position={[0, 0, 0.5]} intensity={1.5} color="#FF1493" distance={8} />
+        </group>
+
+        {/* Wall art/posters on side walls */}
+        {[-8, 0, 8].map((z, i) => (
+          <group key={`art-left-${i}`} position={[-14.8, 4, z]}>
+            <mesh>
+              <boxGeometry args={[0.05, 1.5, 1.2]} />
+              <meshStandardMaterial
+                color={i === 0 ? "#8B0000" : i === 1 ? "#1E90FF" : "#228B22"}
+                roughness={0.4}
+                metalness={0.2}
+              />
+            </mesh>
+          </group>
+        ))}
+
+        {[-8, 0, 8].map((z, i) => (
+          <group key={`art-right-${i}`} position={[14.8, 4, z]}>
+            <mesh>
+              <boxGeometry args={[0.05, 1.5, 1.2]} />
+              <meshStandardMaterial
+                color={i === 0 ? "#FFD700" : i === 1 ? "#FF4500" : "#9370DB"}
+                roughness={0.4}
+                metalness={0.2}
+              />
+            </mesh>
+          </group>
+        ))}
+
         {/* Wall sconces (decorative light fixtures) */}
         {[-10, 0, 10].map((x, i) => (
           <group key={`sconce-back-${i}`} position={[x, 5, -14.5]}>
@@ -206,9 +302,41 @@ export function Scene() {
               <boxGeometry args={[0.3, 0.6, 0.2]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[0, 0, 0.5]} intensity={0.3} color="#FFAA66" distance={4} />
+            <pointLight position={[0, 0, 0.5]} intensity={0.5} color="#FFAA66" distance={5} />
           </group>
         ))}
+
+        {/* Central chandelier */}
+        <group position={[0, 7.5, 0]}>
+          {/* Chandelier center column */}
+          <mesh castShadow>
+            <cylinderGeometry args={[0.15, 0.2, 1.5, 8]} />
+            <meshStandardMaterial color="#FFD700" roughness={0.2} metalness={0.9} />
+          </mesh>
+          {/* Chandelier arms */}
+          {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((angle, i) => {
+            const x = Math.cos(angle) * 1.2;
+            const z = Math.sin(angle) * 1.2;
+            return (
+              <group key={`chandelier-arm-${i}`} position={[x, -0.5, z]}>
+                <mesh castShadow>
+                  <boxGeometry args={[0.1, 0.1, 1.2]} />
+                  <meshStandardMaterial color="#CD7F32" roughness={0.3} metalness={0.8} />
+                </mesh>
+                {/* Chandelier light bulbs */}
+                <mesh position={[0, -0.3, 0]}>
+                  <sphereGeometry args={[0.15, 16, 16]} />
+                  <meshStandardMaterial
+                    color="#FFF8DC"
+                    emissive="#FFD700"
+                    emissiveIntensity={1.5}
+                  />
+                </mesh>
+                <pointLight position={[0, -0.3, 0]} intensity={0.7} color="#FFED99" distance={8} />
+              </group>
+            );
+          })}
+        </group>
 
         {/* Side wall sconces */}
         {[-10, 0, 10].map((z, i) => (
@@ -217,7 +345,7 @@ export function Scene() {
               <boxGeometry args={[0.2, 0.6, 0.3]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[0.5, 0, 0]} intensity={0.25} color="#FFAA66" distance={4} />
+            <pointLight position={[0.5, 0, 0]} intensity={0.4} color="#FFAA66" distance={5} />
           </group>
         ))}
 
@@ -227,7 +355,7 @@ export function Scene() {
               <boxGeometry args={[0.2, 0.6, 0.3]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[-0.5, 0, 0]} intensity={0.25} color="#FFAA66" distance={4} />
+            <pointLight position={[-0.5, 0, 0]} intensity={0.4} color="#FFAA66" distance={5} />
           </group>
         ))}
 
