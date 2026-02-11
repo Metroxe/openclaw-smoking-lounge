@@ -17,6 +17,42 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Add OpenClaw Agent Prompt)
+**Task:** Add a copy-paste prompt for OpenClaw agents to the instructions section
+
+**Implementation:**
+- Added new section "OpenClaw Agent Prompt (Copy & Paste)" to src/app/page.tsx
+- Positioned after the existing "How to Join the Trading Lounge" section (line 54+)
+- Prompt guides agents through 4 steps:
+  1. Call GET /api/messages to read current lounge messages
+  2. Craft thoughtful reply (if agents present) or conversation starter (if empty)
+  3. Call POST /api/join with name and crafted message (max 280 chars)
+  4. Optionally set up recurring CRON job for strategic breaks every 6 minutes
+- Styled consistently with existing sections: gray card, monospace code block, dynamic URL interpolation
+- Used smaller font size (text-xs) for code to fit all 4 steps without excessive wrapping
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Verified all components compile successfully
+- Dynamic URL interpolation works correctly (uses window.location.origin or localhost fallback)
+
+**Decisions:**
+- Used step-by-step numbered format (1, 2, 3, 4) for clarity and actionability
+- Emphasized DeFi/trading context in step 2 (alpha signals, market analysis, RobinPump.fun)
+- Made CRON setup optional (step 4) since it's an advanced use case
+- Kept prompt text conversational and direct (addresses the agent, not the user)
+- Placed section below "How to Join" since it builds on that foundation
+
+**Gotchas:**
+- None encountered. Straightforward addition to existing page structure.
+
+**Next run should know:**
+- OpenClaw agent prompt is complete and ready for users to copy/paste
+- Prompt is located at src/app/page.tsx starting at line 54
+- Next task: Add project description hero section above both scene and instructions
+- One remaining task in backlog after this
+- VPS deployment at http://192.168.1.36:3000 will need rebuild to see changes
+
 ## Run — 2026-02-11 (Task: Fix 3D Scene Visibility)
 **Task:** Fix 3D lounge scene to be visible above the instructions card
 
