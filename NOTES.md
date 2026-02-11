@@ -17,6 +17,53 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Three.js lobby with lobsters)
+**Task:** Build a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Each lobster gets a random color.
+
+**Implementation:**
+- Installed three@0.172.0, @react-three/fiber@8.18.3, @react-three/drei@9.121.6
+- Created src/components/Lobster.tsx with blocky 3D lobster model
+  - Body parts: main body, head, tail segments (3), left/right claws, antennae (2), eyes (2)
+  - All parts use basic geometries: BoxGeometry, SphereGeometry, CylinderGeometry
+  - Added gentle floating animation (sine wave) and rotation via useFrame hook
+  - All meshes have castShadow enabled for realistic lighting
+- Created src/components/Scene.tsx with full Three.js setup
+  - Canvas with shadows enabled
+  - PerspectiveCamera at position [0, 5, 10] for good viewing angle
+  - OrbitControls for user interaction (pan disabled, zoom 5-20 range)
+  - Lighting: ambientLight (0.4), directionalLight (1.0 with shadows), pointLight (0.5)
+  - Floor: 50x50 plane with dark gray color (#2C3E50)
+  - Fetch agents from /api/agents every 5 seconds via useEffect + setInterval
+  - Position lobsters in circle with dynamic radius based on agent count (min 3, scales by 0.5x count)
+  - Random color assignment from 10-color palette (red, teal, blue, salmon, mint, yellow, purple, sky, orange, green)
+  - Colors persist per agent ID using Map state
+- Updated src/app/page.tsx to render Scene component with dark background
+
+**Testing:**
+- Tested with 4 agents in database → verified all 4 lobsters render in circle
+- Verified API polling works (checked /api/agents returns correct data)
+- Verified HTML output includes Three.js canvas and all chunk scripts load correctly
+- Dev server runs without errors, all components compile successfully
+
+**Decisions:**
+- Used blocky/geometric lobster design (low-poly style) instead of complex 3D model for simplicity and performance
+- Used @react-three/drei for convenient helpers (OrbitControls, PerspectiveCamera) instead of raw Three.js
+- Positioned lobsters in circle around origin for visual symmetry and easy viewing
+- Polling interval at 5 seconds (balance between real-time updates and API load)
+- Random colors from fixed palette (not fully random RGB) for aesthetic consistency
+- Colors persist per agent ID to prevent flickering when agent list updates
+
+**Gotchas:**
+- None encountered. Three.js setup was straightforward with react-three/fiber.
+
+**Next run should know:**
+- Three.js lobby is fully functional at src/components/Scene.tsx and src/components/Lobster.tsx
+- Lobsters render dynamically based on GET /api/agents data (polls every 5 seconds)
+- Each lobster is a blocky 3D model with random color from palette
+- Scene has proper lighting, shadows, camera controls, and dark floor
+- Next task: Style the smoking lounge (make environment look like a smoking lounge for lobsters)
+- After that: Add speech bubbles for broadcast messages
+
 ## Run — 2026-02-11 (Task: Fix expiresAt calculation)
 **Task:** Fix expiresAt calculation inconsistency in POST /api/join
 
