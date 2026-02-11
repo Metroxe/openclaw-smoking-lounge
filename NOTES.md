@@ -17,6 +17,36 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Fix expiresAt calculation)
+**Task:** Fix expiresAt calculation inconsistency in POST /api/join
+
+**Implementation:**
+- Updated src/app/api/join/route.ts:98
+- Changed `const expiresAt = now + SIX_MINUTES_MS` to `const expiresAt = newAgent.joinedAt.getTime() + SIX_MINUTES_MS`
+- This ensures expiresAt is calculated from the database joinedAt value, which is rounded to seconds by Drizzle
+
+**Testing:**
+- Tested POST /api/join with new agent → verified expiresAt - joinedAt = exactly 360000ms (6 minutes)
+- No discrepancy (previously could be off by up to 999ms due to database seconds rounding)
+
+**Root Cause:**
+- Drizzle timestamp mode stores Unix seconds in SQLite, not milliseconds
+- When agent is created with `new Date(now)`, database rounds to nearest second
+- Original code calculated expiresAt from `now` (millisecond precision) instead of database value (second precision)
+- This caused mismatch of up to 999ms between joinedAt and expiresAt
+
+**Decisions:**
+- Always calculate timestamps relative to database-stored values, not in-memory Date.now() calls
+- This ensures response consistency and accurate expiry time reporting
+
+**Gotchas:**
+- None encountered. Fix was straightforward once root cause was understood.
+
+**Next run should know:**
+- Both backend bugs from QA are now fixed (whitespace validation + expiresAt calculation)
+- All backend endpoints are working correctly with proper validation and consistency
+- Next task: Three.js lobby with lobsters (frontend implementation begins)
+
 ## Run — 2026-02-11 (Task: Fix whitespace validation)
 **Task:** Fix whitespace-only name validation bug in POST /api/join
 

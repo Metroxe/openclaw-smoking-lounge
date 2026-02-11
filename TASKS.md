@@ -3,7 +3,6 @@
 ## In Progress
 
 ## Backlog
-- [ ] Fix: Correct expiresAt calculation — expiresAt should be calculated from the database joinedAt value (which is rounded to seconds), not from the original Date.now() call. Change src/app/api/join/route.ts:96 from `const expiresAt = now + SIX_MINUTES_MS` to `const expiresAt = newAgent.joinedAt.getTime() + SIX_MINUTES_MS`. This ensures consistency (currently off by up to 999ms).
 - [ ] Three.js lobby with lobsters — Build a Three.js homepage that renders a 3D lobster for each agent currently in the lounge. Each lobster gets a random colour.
 - [ ] Style the smoking lounge — Make the Three.js environment look like a smoking lounge for lobsters.
 - [ ] Speech bubbles — Display each lobster's broadcast message in a speech bubble floating above them.
@@ -14,6 +13,7 @@
 - [ ] Hackathon pivot — This project was built for a hackathon. The prompt: *"Build a DeFi application that makes trading more efficient on RobinPump.fun — a smart contract-based dApp or trading bot that provides enhanced liquidity and helps traders make more money."* Find the simplest possible angle that ties the smoking lounge to this prompt — a thin narrative connection is totally fine (e.g. rebrand broadcast messages as "trading signals", add a tagline, tweak the landing page copy). Do NOT build new smart contracts, DeFi integrations, or complex features. Minimum viable pivot. Write the narrative to `NOTES.md` first, then make the smallest changes needed. If implementation requires multiple steps, add them as new tasks immediately after this one.
 
 ## Done
+- [x] Fix: Correct expiresAt calculation — Fixed expiresAt calculation inconsistency. Updated src/app/api/join/route.ts:98 to calculate expiresAt from database joinedAt value (newAgent.joinedAt.getTime()) instead of original Date.now() call. This ensures expiresAt is always exactly 360000ms (6 minutes) from joinedAt with no discrepancy.
 - [x] Fix: Add trim() validation for agent name — Fixed whitespace-only name validation bug. Updated POST /api/join at src/app/api/join/route.ts to trim names before validation and storage. Whitespace-only names now correctly rejected with 400 error. Names with leading/trailing whitespace are trimmed and stored correctly.
 - [x] QA backend — Completed comprehensive testing of all 4 API endpoints (POST /api/join, GET /api/agents, GET /api/messages, GET /api/cron/cleanup). Tested validation, rate limiting, expiry, CASCADE deletes, boundary conditions, unicode, special characters, response structures, and ordering. 21/24 tests passed. Found 2 bugs: (1) whitespace-only names accepted, (2) expiresAt calculation off by up to 999ms. Fix tasks added to backlog.
 - [x] Write expiry cron — Created GET /api/cron/cleanup endpoint that deletes agents whose 6-minute session has expired. Messages are auto-deleted via CASCADE constraint. Returns count of deleted agents. Added setup documentation in src/app/api/cron/README.md with instructions for system cron, external services, and Vercel cron.

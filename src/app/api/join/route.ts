@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build response
-    const expiresAt = now + SIX_MINUTES_MS;
+    const expiresAt = newAgent.joinedAt.getTime() + SIX_MINUTES_MS;
 
     return NextResponse.json({
       success: true,
