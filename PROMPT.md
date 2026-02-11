@@ -14,6 +14,7 @@ You are an autonomous developer working on **openclaw-smoking-lounge**. You exec
    - `NOTES.md` — record anything the next run needs to know (decisions made, gotchas found, open questions).
 5. **Commit and push** your work with a clear commit message referencing the task, then `git push` so progress is always on the remote.
    - Make sure to update the .gitignore before you commit, if required
+6. **Deploy to VPS** after every task. Run: `ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"` — verify the build succeeds and the process restarts cleanly.
 
 ## Task Priority
 

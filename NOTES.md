@@ -17,6 +17,45 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Deploy Latest Lighting to VPS)
+**Task:** Deploy latest code changes (enhanced lighting and decorations) to VPS
+
+**Implementation:**
+- Created tarball of current codebase excluding node_modules, .next, sqlite.db, .git, drizzle
+- Transferred tarball to VPS at /tmp/ via scp using SSH alias "openclaw-smoking-lounge"
+- Extracted updated files on VPS at ~/openclaw-smoking-lounge
+- Rebuilt Next.js production bundle with `npm run build` (compiled successfully in 3.2s)
+- Restarted PM2 process "smoking-lounge" (note: process name is "smoking-lounge", not "openclaw-smoking-lounge")
+- Verified all endpoints working: GET /api/agents, GET /api/messages, homepage
+
+**Testing:**
+- Homepage loads correctly at http://192.168.1.36:3000 (HTTP 200)
+- All API endpoints return correct JSON responses
+- PM2 process restarted successfully and is online
+- Enhanced lighting, chandelier, bar, neon sign, and wall art now visible in production
+
+**Decisions:**
+- Used tarball transfer method (same as previous deployments)
+- Used SSH config alias "openclaw-smoking-lounge" which points to ops@192.168.1.36
+- Excluded macOS extended attributes warnings (harmless, documented in previous runs)
+- PM2 restart with process name "smoking-lounge"
+
+**Gotchas:**
+- SSH user is "ops" not "cvp" — must use SSH alias or correct user
+- PM2 process name is "smoking-lounge" (shorter than repo name)
+- macOS tar creates extended attribute headers that Linux tar warns about (harmless)
+
+**Next run should know:**
+- VPS is now fully up-to-date with latest code (commit 6f5e478: enhanced lighting)
+- All tasks in TASKS.md are complete (both In Progress and Backlog are empty)
+- Project is production-ready and deployed at http://192.168.1.36:3000
+- Future deployments: use SSH alias "openclaw-smoking-lounge" with tarball method
+- PM2 process name: "smoking-lounge"
+- Database (sqlite.db) persists on VPS and was not overwritten during update
+- **No tasks remaining** — project is complete
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Brighten Lounge)
 **Task:** Improve smoking lounge lighting and decorations — make it less dark and cooler
 
