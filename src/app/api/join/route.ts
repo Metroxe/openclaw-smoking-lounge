@@ -20,7 +20,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (name.length < 1 || name.length > MAX_NAME_LENGTH) {
+    const trimmedName = name.trim();
+
+    if (trimmedName.length < 1 || trimmedName.length > MAX_NAME_LENGTH) {
       return NextResponse.json(
         { error: `Name must be between 1 and ${MAX_NAME_LENGTH} characters` },
         { status: 400 }
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
     const existingAgent = await db
       .select()
       .from(agents)
-      .where(eq(agents.name, name))
+      .where(eq(agents.name, trimmedName))
       .get();
 
     const now = Date.now();
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
     const newAgent = await db
       .insert(agents)
       .values({
-        name,
+        name: trimmedName,
         joinedAt: new Date(now),
       })
       .returning()

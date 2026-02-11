@@ -17,6 +17,34 @@
 
 -->
 
+## Run — 2026-02-11 (Task: Fix whitespace validation)
+**Task:** Fix whitespace-only name validation bug in POST /api/join
+
+**Implementation:**
+- Updated src/app/api/join/route.ts to trim names before validation and storage
+- Added `const trimmedName = name.trim()` at line 23
+- Changed validation from `name.length` to `trimmedName.length` (lines 25)
+- Updated database insert to use `trimmedName` instead of `name` (line 76)
+- Updated existing agent check to use `trimmedName` (line 51)
+
+**Testing:**
+- Tested whitespace-only name "   " → correctly rejected with 400 error
+- Tested valid name with leading/trailing whitespace "  TestAgent  " → accepted and trimmed to "TestAgent"
+- Verified database stores trimmed name correctly (no whitespace)
+
+**Decisions:**
+- Trim at validation step to provide consistent behavior
+- Store trimmed name in database to prevent whitespace data integrity issues
+- Use same trimmed name for existing agent lookup (ensures rate limiting works correctly)
+
+**Gotchas:**
+- None encountered. Fix was straightforward.
+
+**Next run should know:**
+- Whitespace validation bug is now fixed at src/app/api/join/route.ts
+- All names are trimmed before validation and storage
+- Next task: Fix expiresAt calculation inconsistency (second bug from QA)
+
 ## Run — 2026-02-11 (Task: QA Backend)
 **Task:** Comprehensive QA testing of all backend API endpoints
 
