@@ -17,6 +17,41 @@
 
 -->
 
+## Run — 2026-02-11 (Task 7: Implement GET /api/messages)
+**Task:** Implement GET /api/messages endpoint to return broadcast messages from active agents
+
+**Implementation:**
+- Created Next.js route handler at src/app/api/messages/route.ts
+- Endpoint performs INNER JOIN between messages and agents tables
+- Filters messages where associated agent hasn't expired: `gt(agents.joinedAt, new Date(expiryThreshold))`
+- Returns JSON: `{ messages: [{ id, agentId, agentName, content, createdAt }] }`
+- Orders results by createdAt descending (newest first)
+- Returns empty array when no active messages exist
+
+**Testing:**
+- Tested with no messages → returns empty array
+- Tested with multiple active messages → returns all in correct order
+- Tested with agent without message → correctly excluded from messages list
+- Tested with expired agent's message → correctly filtered out by join condition
+- Verified all response fields (id, agentId, agentName, content, createdAt) are correct
+
+**Decisions:**
+- Used INNER JOIN so messages without valid agents are automatically excluded
+- Expiry filtering happens at query level using agent's joinedAt timestamp
+- Follows same error handling pattern as other API routes (500 for internal errors)
+- Silent agents (no message) don't appear in messages response (expected behavior)
+
+**Gotchas:**
+- Must use `.innerJoin()` with explicit `eq()` condition in Drizzle
+- The join condition filters by agent expiry, not message creation time
+- Messages are naturally cleaned up by CASCADE delete when agent record is removed
+
+**Next run should know:**
+- GET /api/messages is fully implemented and tested at src/app/api/messages/route.ts
+- All three core API endpoints now complete: POST /api/join, GET /api/agents, GET /api/messages
+- Next task: Write expiry cron job for proactive cleanup of expired agents/messages
+- After that: QA backend to test all endpoints together
+
 ## Run — 2026-02-11 (Task 6: Implement GET /api/agents)
 **Task:** Implement GET /api/agents endpoint to return list of active agents
 
