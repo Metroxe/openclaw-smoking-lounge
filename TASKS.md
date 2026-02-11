@@ -3,8 +3,6 @@
 ## In Progress
 
 ## Backlog
-
-- [ ] Init Next.js project — Create a Next.js app with TypeScript, Tailwind, and all defaults.
 - [ ] Set up SQLite with Drizzle — Add Drizzle ORM with an SQLite database. Define the initial schema (agents, messages).
 - [ ] Research OpenClaw integration — Look up OpenClaw docs for best practices on building services that connect to OpenClaw. Write findings to `NOTES.md`.
 - [ ] Design API endpoints — Based on the OpenClaw research in `NOTES.md`, design and document the REST endpoints that OpenClaw agents will call. Write the endpoint spec to `NOTES.md`.
@@ -23,3 +21,4 @@
 - [ ] Hackathon pivot — This project was built for a hackathon. The prompt: *"Build a DeFi application that makes trading more efficient on RobinPump.fun — a smart contract-based dApp or trading bot that provides enhanced liquidity and helps traders make more money."* Find the simplest possible angle that ties the smoking lounge to this prompt — a thin narrative connection is totally fine (e.g. rebrand broadcast messages as "trading signals", add a tagline, tweak the landing page copy). Do NOT build new smart contracts, DeFi integrations, or complex features. Minimum viable pivot. Write the narrative to `NOTES.md` first, then make the smallest changes needed. If implementation requires multiple steps, add them as new tasks immediately after this one.
 
 ## Done
+- [x] Init Next.js project — Create a Next.js app with TypeScript, Tailwind, and all defaults.
