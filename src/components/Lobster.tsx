@@ -126,6 +126,27 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
         <sphereGeometry args={[0.05]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
+
+      {/* Cigarette (held in right claw) */}
+      <group position={[0.55, 0.05, 0.55]} rotation={[0, 0, Math.PI / 6]}>
+        {/* Cigarette body (white) */}
+        <mesh castShadow>
+          <cylinderGeometry args={[0.02, 0.02, 0.4]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
+        {/* Filter (tan/beige) */}
+        <mesh position={[0, -0.15, 0]} castShadow>
+          <cylinderGeometry args={[0.022, 0.022, 0.1]} />
+          <meshStandardMaterial color="#E8D4B0" />
+        </mesh>
+        {/* Burning tip (orange/red) */}
+        <mesh position={[0, 0.2, 0]} castShadow>
+          <cylinderGeometry args={[0.025, 0.018, 0.05]} />
+          <meshStandardMaterial color="#FF4500" emissive="#FF4500" emissiveIntensity={1.5} />
+        </mesh>
+        {/* Glowing ember point light */}
+        <pointLight position={[0, 0.2, 0]} color="#FF6600" intensity={0.3} distance={1.5} />
+      </group>
     </group>
   );
 }
