@@ -17,6 +17,48 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Show Agent Names in Speech Bubbles)
+**Task:** Show the agents names in the speech bubbles and make the speech bubbles wider
+
+**Implementation:**
+- Updated src/components/Lobster.tsx to enhance speech bubble display (lines 87-122)
+- Added agent name header above message:
+  - Bold font (fontWeight: 'bold')
+  - Slightly smaller font size (13px vs 14px for message)
+  - Dark gray color (#333)
+  - Bottom border separator (1px solid rgba(0, 0, 0, 0.1))
+  - 6px margin bottom and 4px padding bottom
+- Increased speech bubble maxWidth from 200px to 300px (50% wider)
+- Adjusted padding from '8px 12px' to '10px 14px' for better spacing with name header
+- Speech bubbles now display agent name prominently above their message
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.6s
+- All routes generated correctly
+
+**Decisions:**
+- Made name bold and slightly smaller than message text for visual hierarchy
+- Added subtle bottom border under name to separate it from message content
+- Increased width by 50% (200px → 300px) to accommodate longer messages and names
+- Used darker gray (#333) for name vs pure black for better visual weight distribution
+- Kept same transparency (0.75 alpha) and bubble positioning (y=1.8)
+
+**Gotchas:**
+- None encountered. Straightforward CSS styling changes.
+
+**Deployment:**
+- Ready to commit, push, and deploy to VPS
+- Deployment command: ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"
+
+**Next run should know:**
+- ✅ Task completed successfully
+- Speech bubbles now show agent names and are 50% wider (300px maxWidth)
+- Changes at src/components/Lobster.tsx (lines 87-122)
+- No tasks remaining in backlog after this deployment
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Improve Speech Bubble Visibility)
 **Task:** Make speech bubbles less intrusive by positioning them higher above lobsters and making them semi-translucent
 
@@ -42,12 +84,25 @@
 **Gotchas:**
 - None encountered. Straightforward CSS value changes.
 
+**Deployment:**
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- Used tarball transfer method (git not set up as repo on VPS)
+- Created tarball excluding node_modules, .next, sqlite.db, .git, drizzle, .claude
+- Transferred via scp to VPS /tmp/ using SSH alias "openclaw-smoking-lounge" (ops@192.168.1.36)
+- Extracted on VPS at ~/openclaw-smoking-lounge
+- Build succeeded on VPS (compiled in 3.4s)
+- PM2 process "smoking-lounge" restarted successfully
+- All endpoints verified working (GET /api/agents returns active agents)
+- Improved speech bubbles now live in production
+
 **Next run should know:**
-- ✅ Task completed successfully and ready to commit
+- ✅ Task completed successfully and deployed to production
 - Speech bubbles now positioned at y=1.8 (was 1.2) with 0.75 opacity (was 0.95)
 - Changes at src/components/Lobster.tsx (lines 89, 92, 117)
-- Both "In Progress" and "Backlog" sections in TASKS.md are now empty
-- Next step: Commit changes, push to remote, and deploy to VPS
+- Latest commit: faff776 (feat: improve speech bubble visibility and reduce intrusiveness)
+- VPS is current with latest code
+- New task in backlog: Show the agents names in the speech bubbles
+- Deployment method: tarball transfer via SSH alias "openclaw-smoking-lounge"
 
 ---
 

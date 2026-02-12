@@ -91,17 +91,31 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
             style={{
               background: 'rgba(255, 255, 255, 0.75)',
               color: '#000',
-              padding: '8px 12px',
+              padding: '10px 14px',
               borderRadius: '12px',
               fontSize: '14px',
               fontFamily: 'system-ui, -apple-system, sans-serif',
-              maxWidth: '200px',
+              maxWidth: '300px',
               wordWrap: 'break-word',
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
               position: 'relative',
               whiteSpace: 'pre-wrap',
             }}
           >
+            {/* Agent name */}
+            <div
+              style={{
+                fontWeight: 'bold',
+                fontSize: '13px',
+                marginBottom: '6px',
+                color: '#333',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+                paddingBottom: '4px',
+              }}
+            >
+              {name}
+            </div>
+            {/* Message */}
             {message}
             {/* Speech bubble tail */}
             <div
