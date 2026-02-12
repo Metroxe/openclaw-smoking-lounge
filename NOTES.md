@@ -17,6 +17,47 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Brighten Lounge)
+**Task:** Make the lounge a little brighter
+
+**Implementation:**
+- Updated src/components/Scene.tsx to significantly increase brightness across all lighting sources
+- Ambient light intensity: 0.4 → 0.6
+- Main directional light intensity: 1.0 → 1.5
+- Corner accent lights: 0.8/0.7 → 1.2/1.0, distance extended from 15 to 18
+- Overhead chandelier lights: 1.2/0.6 → 1.8/1.0, distance extended from 12/10 to 15/12
+- Bar back-lighting: 0.8/0.6 → 1.2/0.9, distance extended from 8/6 to 10/8
+- Neon sign light: 1.5 → 2.0, distance extended from 8 to 10
+- Wall sconces (back wall): 0.5 → 0.7, distance extended from 5 to 6
+- Chandelier bulb lights: 0.7 → 1.0, distance extended from 8 to 10
+- Side wall sconces: 0.4 → 0.6, distance extended from 5 to 6
+- Fog color lightened from #2A1F1A to #3A2F2A
+- Fog start/end distance pushed further back: [15, 35] → [18, 40]
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.6s
+- All routes generated correctly
+
+**Decisions:**
+- Increased all light intensities by approximately 30-50% across the board
+- Extended light distances proportionally to match intensity increases
+- Lightened fog color and pushed it further back to reduce atmospheric darkness
+- Maintained relative balance between different light sources (ambient, directional, point lights)
+- Kept warm color palette intact while increasing brightness
+
+**Gotchas:**
+- None encountered. Straightforward intensity and distance value increases.
+
+**Next run should know:**
+- ✅ Task completed successfully
+- Lounge is now significantly brighter while maintaining warm, cozy atmosphere
+- All lighting changes at src/components/Scene.tsx (lines 113-359)
+- Next task in backlog: Add WASD/arrow key camera controls
+- VPS deployment will need rebuild to see brighter lighting
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Add Smoke Effects)
 **Task:** Add smoke effect to cigarettes
 
@@ -52,12 +93,25 @@
 - Opacity attribute is custom (not built-in), but unused since we control opacity at material level
 - AdditiveBlending must be imported from THREE namespace (THREE.AdditiveBlending)
 
+**Deployment:**
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- Used tarball transfer method (git not set up as repo on VPS)
+- Created tarball excluding node_modules, .next, sqlite.db, .git, drizzle
+- Transferred via scp to VPS /tmp/ using SSH alias "openclaw-smoking-lounge" (ops@192.168.1.36)
+- Extracted on VPS at ~/openclaw-smoking-lounge
+- Build succeeded on VPS (compiled in 3.3s)
+- PM2 process "smoking-lounge" restarted successfully
+- All endpoints verified working (GET /api/agents returns empty array, homepage HTTP 200)
+- Smoke particles now visible in production
+
 **Next run should know:**
+- ✅ Task completed successfully and deployed to production
 - Smoke effect is complete at src/components/Lobster.tsx (lines 17-89, 199-208)
 - Each lobster now has animated smoke rising from cigarette
+- Latest commit: fd09861 (feat: add animated smoke effect to cigarettes)
+- VPS is current with latest code
 - Next tasks in backlog: make lounge brighter, add WASD camera controls
-- VPS deployment at http://192.168.1.36:3000 will need rebuild to see smoke effect
-- To update VPS: ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"
+- Deployment method: tarball transfer via SSH alias "openclaw-smoking-lounge"
 
 ---
 

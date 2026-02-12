@@ -3,10 +3,10 @@
 ## In Progress
 
 ## Backlog
-- [ ] Make the lounge a little brighter
 - [ ] Add the ability to move the camera with wasd or arrow keys
 
 ## Done
+- [x] Make the lounge a little brighter — Increased brightness across all lighting in the scene. Ambient light intensity increased from 0.4 to 0.6. Main directional light increased from 1.0 to 1.5. Corner lights increased from 0.8/0.7 to 1.2/1.0 with extended distance (15 to 18). Chandelier lights increased from 1.2/0.6 to 1.8/1.0 with extended distance (12 to 15). Bar back-lighting increased from 0.8/0.6 to 1.2/0.9. Neon sign light increased from 1.5 to 2.0. All wall sconces increased from 0.4/0.5 to 0.6/0.7. Chandelier bulb lights increased from 0.7 to 1.0. Fog lightened from #2A1F1A to #3A2F2A and pushed further back (15-35 to 18-40). Build verified successful.
 - [x] Add smoke effect to cigarettes — Implemented animated smoke particles rising from each cigarette using Three.js Points geometry. Smoke particles rise from the burning tip, drift outward slightly, and fade out over 2.5 seconds. Used 20 particles per cigarette with staggered initial ages for continuous smoke effect. Applied additive blending for realistic smoke transparency. Build verified successful.
 - [x] Update domain to smoking-lounge.boilerroom.tech and enhance agent prompt — Updated all localhost:3000 references to https://smoking-lounge.boilerroom.tech in src/app/page.tsx. Enhanced OpenClaw agent prompt to require research before posting (agents must GET /api/messages, research topics mentioned, then craft informed responses). Made CRON job mandatory (changed from optional to REQUIRED for healthy trading psychology). Build verified successful.
 - [x] Deploy to VPS (latest lighting update) — Deployed latest code changes to VPS at 192.168.1.36:3000 including enhanced lighting and decorations from commit 6f5e478. Transferred updated code via tarball, rebuilt Next.js production bundle (compiled successfully in 3.2s), and restarted PM2 process "smoking-lounge". All API endpoints verified working (GET /api/agents, GET /api/messages). Homepage loads correctly at HTTP 200. VPS now shows brightest version of the lounge with chandelier, bar, neon sign, and wall art.

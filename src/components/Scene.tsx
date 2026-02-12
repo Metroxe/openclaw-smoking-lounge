@@ -110,12 +110,12 @@ export function Scene() {
         <OrbitControls enablePan={false} minDistance={5} maxDistance={25} />
 
         {/* Ambient warm lighting (brighter, welcoming atmosphere) */}
-        <ambientLight intensity={0.4} color="#FFE4B5" />
+        <ambientLight intensity={0.6} color="#FFE4B5" />
 
         {/* Main overhead light (warm, brighter) */}
         <directionalLight
           position={[0, 8, 0]}
-          intensity={1.0}
+          intensity={1.5}
           color="#FFCC99"
           castShadow
           shadow-mapSize-width={2048}
@@ -127,20 +127,20 @@ export function Scene() {
         />
 
         {/* Corner accent lights (warm glow, brighter) */}
-        <pointLight position={[-8, 3, -8]} intensity={0.8} color="#FF9966" distance={15} />
-        <pointLight position={[8, 3, -8]} intensity={0.8} color="#FF9966" distance={15} />
-        <pointLight position={[-8, 3, 8]} intensity={0.7} color="#FFAA77" distance={15} />
-        <pointLight position={[8, 3, 8]} intensity={0.7} color="#FFAA77" distance={15} />
+        <pointLight position={[-8, 3, -8]} intensity={1.2} color="#FF9966" distance={18} />
+        <pointLight position={[8, 3, -8]} intensity={1.2} color="#FF9966" distance={18} />
+        <pointLight position={[-8, 3, 8]} intensity={1.0} color="#FFAA77" distance={18} />
+        <pointLight position={[8, 3, 8]} intensity={1.0} color="#FFAA77" distance={18} />
 
         {/* Overhead chandelier lights */}
-        <pointLight position={[0, 7, 0]} intensity={1.2} color="#FFD700" distance={12} />
-        <pointLight position={[-5, 6, -5]} intensity={0.6} color="#FFA500" distance={10} />
-        <pointLight position={[5, 6, -5]} intensity={0.6} color="#FFA500" distance={10} />
-        <pointLight position={[-5, 6, 5]} intensity={0.6} color="#FFA500" distance={10} />
-        <pointLight position={[5, 6, 5]} intensity={0.6} color="#FFA500" distance={10} />
+        <pointLight position={[0, 7, 0]} intensity={1.8} color="#FFD700" distance={15} />
+        <pointLight position={[-5, 6, -5]} intensity={1.0} color="#FFA500" distance={12} />
+        <pointLight position={[5, 6, -5]} intensity={1.0} color="#FFA500" distance={12} />
+        <pointLight position={[-5, 6, 5]} intensity={1.0} color="#FFA500" distance={12} />
+        <pointLight position={[5, 6, 5]} intensity={1.0} color="#FFA500" distance={12} />
 
         {/* Fog for smoky atmosphere (lighter, less dense) */}
-        <fog attach="fog" args={['#2A1F1A', 15, 35]} />
+        <fog attach="fog" args={['#3A2F2A', 18, 40]} />
 
         {/* Floor - dark wood planks */}
         <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
@@ -228,9 +228,9 @@ export function Scene() {
             <meshStandardMaterial color="#5C3D2E" roughness={0.6} />
           </mesh>
           {/* Bar back lighting */}
-          <pointLight position={[0, 2.5, -0.8]} intensity={0.8} color="#00FFFF" distance={8} />
-          <pointLight position={[-4, 2.5, -0.8]} intensity={0.6} color="#FF00FF" distance={6} />
-          <pointLight position={[4, 2.5, -0.8]} intensity={0.6} color="#00FF88" distance={6} />
+          <pointLight position={[0, 2.5, -0.8]} intensity={1.2} color="#00FFFF" distance={10} />
+          <pointLight position={[-4, 2.5, -0.8]} intensity={0.9} color="#FF00FF" distance={8} />
+          <pointLight position={[4, 2.5, -0.8]} intensity={0.9} color="#00FF88" distance={8} />
         </group>
 
         {/* Bar stools */}
@@ -265,7 +265,7 @@ export function Scene() {
               roughness={0.9}
             />
           </mesh>
-          <pointLight position={[0, 0, 0.5]} intensity={1.5} color="#FF1493" distance={8} />
+          <pointLight position={[0, 0, 0.5]} intensity={2.0} color="#FF1493" distance={10} />
         </group>
 
         {/* Wall art/posters on side walls */}
@@ -302,7 +302,7 @@ export function Scene() {
               <boxGeometry args={[0.3, 0.6, 0.2]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[0, 0, 0.5]} intensity={0.5} color="#FFAA66" distance={5} />
+            <pointLight position={[0, 0, 0.5]} intensity={0.7} color="#FFAA66" distance={6} />
           </group>
         ))}
 
@@ -332,7 +332,7 @@ export function Scene() {
                     emissiveIntensity={1.5}
                   />
                 </mesh>
-                <pointLight position={[0, -0.3, 0]} intensity={0.7} color="#FFED99" distance={8} />
+                <pointLight position={[0, -0.3, 0]} intensity={1.0} color="#FFED99" distance={10} />
               </group>
             );
           })}
@@ -345,7 +345,7 @@ export function Scene() {
               <boxGeometry args={[0.2, 0.6, 0.3]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[0.5, 0, 0]} intensity={0.4} color="#FFAA66" distance={5} />
+            <pointLight position={[0.5, 0, 0]} intensity={0.6} color="#FFAA66" distance={6} />
           </group>
         ))}
 
@@ -355,7 +355,7 @@ export function Scene() {
               <boxGeometry args={[0.2, 0.6, 0.3]} />
               <meshStandardMaterial color="#8B6F47" roughness={0.5} metalness={0.3} />
             </mesh>
-            <pointLight position={[-0.5, 0, 0]} intensity={0.4} color="#FFAA66" distance={5} />
+            <pointLight position={[-0.5, 0, 0]} intensity={0.6} color="#FFAA66" distance={6} />
           </group>
         ))}
 
