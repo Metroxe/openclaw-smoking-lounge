@@ -17,6 +17,40 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Improve Speech Bubble Visibility)
+**Task:** Make speech bubbles less intrusive by positioning them higher above lobsters and making them semi-translucent
+
+**Implementation:**
+- Updated src/components/Lobster.tsx to improve speech bubble positioning and transparency
+- Changed bubble position from [0, 1.2, 0] to [0, 1.8, 0] (increased y from 1.2 to 1.8)
+- Reduced background opacity from rgba(255, 255, 255, 0.95) to rgba(255, 255, 255, 0.75)
+- Updated bubble tail border color to match new transparency (0.75 alpha)
+- Bubbles now positioned 1.8 units above lobster base (well above antennae which extend to ~0.5)
+- Semi-transparent appearance allows better visibility of scene behind bubbles
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.9s
+- All routes generated correctly
+
+**Decisions:**
+- Increased height by 0.6 units (from 1.2 to 1.8) to create clear visual separation from lobster
+- Reduced opacity by 0.20 (from 0.95 to 0.75) to make bubbles semi-translucent while maintaining readability
+- Kept all other styling intact (padding, borderRadius, fontSize, maxWidth, shadow)
+- Updated tail pointer to match new opacity for visual consistency
+
+**Gotchas:**
+- None encountered. Straightforward CSS value changes.
+
+**Next run should know:**
+- ✅ Task completed successfully and ready to commit
+- Speech bubbles now positioned at y=1.8 (was 1.2) with 0.75 opacity (was 0.95)
+- Changes at src/components/Lobster.tsx (lines 89, 92, 117)
+- Both "In Progress" and "Backlog" sections in TASKS.md are now empty
+- Next step: Commit changes, push to remote, and deploy to VPS
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Add WASD Camera Controls)
 **Task:** Add the ability to move the camera with wasd or arrow keys
 

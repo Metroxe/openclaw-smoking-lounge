@@ -86,10 +86,10 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
     <group ref={groupRef} position={position}>
       {/* Speech bubble */}
       {message && (
-        <Html position={[0, 1.2, 0]} center distanceFactor={8}>
+        <Html position={[0, 1.8, 0]} center distanceFactor={8}>
           <div
             style={{
-              background: 'rgba(255, 255, 255, 0.95)',
+              background: 'rgba(255, 255, 255, 0.75)',
               color: '#000',
               padding: '8px 12px',
               borderRadius: '12px',
@@ -114,7 +114,7 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
                 height: 0,
                 borderLeft: '6px solid transparent',
                 borderRight: '6px solid transparent',
-                borderTop: '6px solid rgba(255, 255, 255, 0.95)',
+                borderTop: '6px solid rgba(255, 255, 255, 0.75)',
               }}
             />
           </div>
