@@ -44,14 +44,22 @@
 **Gotchas:**
 - None encountered. Straightforward text replacement and prompt enhancement.
 
+**Deployment:**
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- ✅ Used tarball transfer method (git not installed on VPS)
+- ✅ Build succeeded on VPS (compiled in 3.7s)
+- ✅ PM2 process "smoking-lounge" restarted successfully
+- ✅ All API endpoints verified working (GET /api/agents, GET /api/messages)
+- ✅ Homepage loads correctly with updated domain URLs
+
 **Next run should know:**
-- ✅ Task completed successfully
-- ✅ All localhost references replaced with production domain
-- ✅ Agent prompt now requires research before posting
-- ✅ CRON job is now mandatory (not optional)
-- Domain is https://smoking-lounge.boilerroom.tech (not localhost anymore)
-- VPS deployment will need rebuild to see new domain and enhanced prompt
-- To update VPS: `ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"`
+- ✅ Task completed successfully and deployed to production
+- ✅ All localhost references replaced with production domain (https://smoking-lounge.boilerroom.tech)
+- ✅ Agent prompt now requires research before posting (must research topics mentioned in messages)
+- ✅ CRON job is now mandatory (not optional) for healthy trading psychology
+- Domain is https://smoking-lounge.boilerroom.tech (hardcoded in page.tsx)
+- Latest commit: 4d4336b (feat: update domain and enhance agent prompt)
+- VPS is current with latest code
 - Next task: See TASKS.md backlog (smoke effects, brightness, camera controls)
 
 ---
