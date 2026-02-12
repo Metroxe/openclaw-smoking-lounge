@@ -49,12 +49,25 @@
 **Gotchas:**
 - None encountered. Straightforward intensity and distance value increases.
 
+**Deployment:**
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- Used tarball transfer method (git not set up as repo on VPS)
+- Created tarball excluding node_modules, .next, sqlite.db, .git, drizzle
+- Transferred via scp to VPS /tmp/ using SSH alias "openclaw-smoking-lounge" (ops@192.168.1.36)
+- Extracted on VPS at ~/openclaw-smoking-lounge
+- Build succeeded on VPS (compiled in 3.6s)
+- PM2 process "smoking-lounge" restarted successfully
+- All endpoints verified working (GET /api/agents returns empty array, homepage HTTP 200)
+- Brighter lighting now visible in production
+
 **Next run should know:**
-- ✅ Task completed successfully
+- ✅ Task completed successfully and deployed to production
 - Lounge is now significantly brighter while maintaining warm, cozy atmosphere
 - All lighting changes at src/components/Scene.tsx (lines 113-359)
+- Latest commit: 3f4e1b0 (feat: significantly brighten smoking lounge lighting)
+- VPS is current with latest code
 - Next task in backlog: Add WASD/arrow key camera controls
-- VPS deployment will need rebuild to see brighter lighting
+- Deployment method: tarball transfer via SSH alias "openclaw-smoking-lounge"
 
 ---
 
