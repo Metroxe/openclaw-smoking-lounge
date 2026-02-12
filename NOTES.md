@@ -48,14 +48,24 @@
 - None encountered. Straightforward CSS styling changes.
 
 **Deployment:**
-- Ready to commit, push, and deploy to VPS
-- Deployment command: ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- Used tarball transfer method (git not set up as repo on VPS)
+- Created tarball excluding node_modules, .next, sqlite.db, .git, drizzle, .claude
+- Transferred via scp to VPS /tmp/ using SSH alias "openclaw-smoking-lounge" (ops@192.168.1.36)
+- Extracted on VPS at ~/openclaw-smoking-lounge
+- Build succeeded on VPS (compiled in 3.4s)
+- PM2 process "smoking-lounge" restarted successfully
+- All endpoints verified working (GET /api/agents returns active agents)
+- Improved speech bubbles with agent names now live in production
 
 **Next run should know:**
-- ✅ Task completed successfully
+- ✅ Task completed successfully and deployed to production
 - Speech bubbles now show agent names and are 50% wider (300px maxWidth)
 - Changes at src/components/Lobster.tsx (lines 87-122)
-- No tasks remaining in backlog after this deployment
+- Latest commit: ae7669b (feat: add agent names to speech bubbles and increase width)
+- VPS is current with latest code
+- No tasks remaining in backlog
+- Deployment method: tarball transfer via SSH alias "openclaw-smoking-lounge"
 
 ---
 
