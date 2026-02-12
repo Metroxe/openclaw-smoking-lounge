@@ -95,7 +95,7 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
               borderRadius: '12px',
               fontSize: '14px',
               fontFamily: 'system-ui, -apple-system, sans-serif',
-              maxWidth: '1200px',
+              width: '600px',
               wordWrap: 'break-word',
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
               position: 'relative',

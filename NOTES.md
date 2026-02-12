@@ -17,6 +17,96 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Fix Speech Bubble Width Bug)
+**Task:** Debug why speech bubble width was not visually changing despite multiple code changes to increase `maxWidth`
+
+**Root Cause Analysis:**
+- Previous runs increased `maxWidth` from 200px → 300px → 1200px, but the bubble never appeared wider
+- The issue has two parts:
+  1. **`maxWidth` is a ceiling, not a floor.** CSS `maxWidth` only limits *maximum* width — the div naturally shrinks to fit its text content. Short messages = narrow bubble, regardless of `maxWidth`.
+  2. **`@react-three/drei` Html component applies CSS `scale()`.** The `distanceFactor={8}` prop causes the Html wrapper to be scaled via `objectScale(el, camera) * distanceFactor`. At typical viewing distances (~13 units), the scale factor is approximately 0.66x. So even a 1200px element would only appear as ~800 visual pixels — but since the div was shrink-wrapping to content anyway, it appeared much narrower.
+
+**How `@react-three/drei` Html component works (for future reference):**
+- Source: `node_modules/@react-three/drei/web/Html.js`
+- Non-transform mode (our case): Sets `el.style.transform = translate3d(...) scale(${objectScale * distanceFactor})`
+- `objectScale()` returns `1 / (2 * tan(fov/2) * distance)` for perspective cameras
+- The `center` prop adds `transform: translate3d(-50%,-50%,0)` to the inner wrapper
+- The HTML content has no inherent width constraint from the Html component itself
+
+**Fix Applied:**
+- Changed `maxWidth: '1200px'` → `width: '600px'` in src/components/Lobster.tsx line 98
+- Using fixed `width` instead of `maxWidth` ensures the bubble is always 600px wide in CSS space
+- At typical viewing distances (scale ~0.66), this renders as ~400 visual pixels — wide and readable
+- `wordWrap: 'break-word'` still handles text that exceeds the width
+- `whiteSpace: 'pre-wrap'` preserves line breaks
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build, compiled in 3.1s)
+- All routes generated correctly
+
+**Decisions:**
+- Used `width: '600px'` (fixed) instead of `maxWidth` to guarantee visual width
+- 600px chosen as a reasonable width that won't be too overwhelming at various zoom levels
+- Kept all other bubble styling unchanged (transparency, border-radius, font, shadow, tail)
+
+**Gotchas:**
+- `maxWidth` in CSS only limits maximum width — it does NOT make elements wider
+- The `@react-three/drei` Html component's `distanceFactor` applies a CSS `scale()` transform, which proportionally shrinks all CSS pixel values
+- When debugging visual sizing issues in Three.js Html overlays, always account for the scale factor applied by `distanceFactor`
+
+**Next run should know:**
+- Speech bubble now uses `width: '600px'` (fixed width) at src/components/Lobster.tsx line 98
+- The `distanceFactor={8}` is still active, scaling the 600px to ~400 visual pixels at default camera distance
+- If bubbles need to be even wider/narrower, adjust the `width` value (not `maxWidth`)
+- Alternatively, adjusting `distanceFactor` changes the overall scaling of the Html overlay
+- Changes need to be committed, pushed, and deployed to VPS
+
+---
+
+## Run — 2026-02-11 (Ralph Loop - Make Speech Bubbles 400% Wider)
+**Task:** Make the speech bubbles 400% wider
+
+**Implementation:**
+- Updated src/components/Lobster.tsx line 98 to increase speech bubble maxWidth from 300px to 1200px
+- 400% increase: 300px × 4 = 1200px
+- Allows much longer messages to display without excessive wrapping
+- All other styling (padding, transparency, positioning) remains unchanged
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 3.0s
+- All routes generated correctly
+
+**Decisions:**
+- Increased width by exactly 400% as requested (300px → 1200px)
+- Kept all other speech bubble styling intact (transparency, positioning, font sizes, etc.)
+- No changes to bubble positioning or other visual properties
+
+**Gotchas:**
+- None encountered. Single-line CSS value change.
+
+**Deployment:**
+- ✅ Deployed to VPS successfully at http://192.168.1.36:3000
+- Used tarball transfer method (git not set up as repo on VPS)
+- Created tarball excluding node_modules, .next, sqlite.db, .git, drizzle, .claude
+- Transferred via scp to VPS /tmp/ using SSH alias "openclaw-smoking-lounge" (ops@192.168.1.36)
+- Extracted on VPS at ~/openclaw-smoking-lounge
+- Build succeeded on VPS (compiled in 3.5s)
+- PM2 process "smoking-lounge" restarted successfully (restart #8)
+- All endpoints verified working (GET /api/agents returns active agents with proper JSON)
+- Speech bubbles now 1200px wide (400% wider than original 300px) in production
+
+**Next run should know:**
+- ✅ Task completed successfully and deployed to production
+- Speech bubbles now 1200px maxWidth (was 300px, increased by 400%)
+- Changes at src/components/Lobster.tsx line 98
+- Latest commit: 7c2d55b (feat: increase speech bubble width to 1200px)
+- VPS is current with latest code
+- No tasks remaining in backlog
+- Deployment method: tarball transfer via SSH alias "openclaw-smoking-lounge"
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Show Agent Names in Speech Bubbles)
 **Task:** Show the agents names in the speech bubbles and make the speech bubbles wider
 
