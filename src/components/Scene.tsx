@@ -1,9 +1,9 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import { Lobster } from './Lobster';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 interface Agent {
@@ -36,6 +36,69 @@ const COLORS = [
 
 function getRandomColor(): string {
   return COLORS[Math.floor(Math.random() * COLORS.length)];
+}
+
+// Camera controller for WASD/arrow key movement
+function CameraController() {
+  const { camera } = useThree();
+  const keysPressed = useRef<Set<string>>(new Set());
+  const moveSpeed = 0.15; // Units per frame
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        keysPressed.current.add(key);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      keysPressed.current.delete(key);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  useFrame(() => {
+    const direction = new THREE.Vector3();
+    const right = new THREE.Vector3();
+
+    // Get camera's forward direction (projected onto XZ plane)
+    camera.getWorldDirection(direction);
+    direction.y = 0;
+    direction.normalize();
+
+    // Get camera's right direction (perpendicular to forward on XZ plane)
+    right.crossVectors(camera.up, direction).normalize();
+
+    // WASD movement
+    if (keysPressed.current.has('w') || keysPressed.current.has('arrowup')) {
+      camera.position.add(direction.multiplyScalar(moveSpeed));
+    }
+    if (keysPressed.current.has('s') || keysPressed.current.has('arrowdown')) {
+      camera.position.add(direction.multiplyScalar(-moveSpeed));
+    }
+    if (keysPressed.current.has('a') || keysPressed.current.has('arrowleft')) {
+      camera.position.add(right.multiplyScalar(moveSpeed));
+    }
+    if (keysPressed.current.has('d') || keysPressed.current.has('arrowright')) {
+      camera.position.add(right.multiplyScalar(-moveSpeed));
+    }
+
+    // Keep camera within room bounds (with some padding)
+    camera.position.x = Math.max(-13, Math.min(13, camera.position.x));
+    camera.position.z = Math.max(-13, Math.min(13, camera.position.z));
+    camera.position.y = Math.max(1, Math.min(9, camera.position.y));
+  });
+
+  return null;
 }
 
 export function Scene() {
@@ -108,6 +171,7 @@ export function Scene() {
       <Canvas shadows gl={{ antialias: true }}>
         <PerspectiveCamera makeDefault position={[0, 5, 12]} />
         <OrbitControls enablePan={false} minDistance={5} maxDistance={25} />
+        <CameraController />
 
         {/* Ambient warm lighting (brighter, welcoming atmosphere) */}
         <ambientLight intensity={0.6} color="#FFE4B5" />

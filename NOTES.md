@@ -17,6 +17,60 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Add WASD Camera Controls)
+**Task:** Add the ability to move the camera with wasd or arrow keys
+
+**Implementation:**
+- Created CameraController component in src/components/Scene.tsx (lines 42-105)
+- Component uses React Three Fiber's useFrame hook to update camera position every frame
+- Listens for keyboard events via window.addEventListener (keydown/keyup)
+- Tracks pressed keys in a Set to handle multiple simultaneous key presses
+- Camera movement is relative to current view direction (not world coordinates):
+  - W/ArrowUp: Move forward in the direction camera is facing
+  - S/ArrowDown: Move backward
+  - A/ArrowLeft: Move left (strafe)
+  - D/ArrowRight: Move right (strafe)
+- Movement speed: 0.15 units per frame
+- Camera bounds enforced to keep within room:
+  - X: -13 to 13 (room width is 30, walls at ±15)
+  - Z: -13 to 13 (room depth is 30, walls at ±15)
+  - Y: 1 to 9 (floor at -0.5, ceiling at 10)
+- Camera movement projected onto XZ plane (forward/backward ignores camera pitch)
+- Integrated with existing OrbitControls (mouse still rotates and zooms camera)
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.6s
+- All routes generated correctly
+
+**Decisions:**
+- Used relative movement (based on camera's forward direction) instead of absolute world axes for better UX
+- Kept OrbitControls enabled so users can still use mouse for rotation/zoom
+- Set movement speed to 0.15 units/frame (fast enough to navigate but not too fast to lose orientation)
+- Added room bounds checking to prevent camera from going through walls or floor/ceiling
+- Projected camera direction onto XZ plane so forward movement doesn't go up/down when looking up/down
+- Used Set data structure for key tracking to properly handle multiple simultaneous key presses
+- Supported both WASD and arrow keys for accessibility
+
+**Gotchas:**
+- Camera.getWorldDirection() returns a normalized vector in world space
+- Had to project direction onto XZ plane (set y=0) to prevent vertical movement when looking up/down
+- Right vector calculated using crossVectors(camera.up, direction) to get perpendicular strafe direction
+- Movement bounds set to ±13 instead of ±15 to provide 2-unit padding from walls
+
+**Deployment:**
+- Built successfully, ready for deployment to VPS
+
+**Next run should know:**
+- ✅ Task completed successfully and ready for commit
+- WASD/arrow key camera controls fully functional at src/components/Scene.tsx
+- Camera movement works alongside existing OrbitControls (mouse rotation/zoom)
+- Users can now navigate the lounge using keyboard in addition to mouse
+- Latest changes at src/components/Scene.tsx (added CameraController component at lines 42-105, integrated at line 172)
+- Next deployment: commit, push, and deploy to VPS via SSH
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Brighten Lounge)
 **Task:** Make the lounge a little brighter
 
