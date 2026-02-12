@@ -17,6 +17,71 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Update Domain and Enhance Agent Prompt)
+**Task:** Update all localhost references to https://smoking-lounge.boilerroom.tech and enhance OpenClaw agent prompt with research requirement and mandatory CRON
+
+**Implementation:**
+- Updated src/app/page.tsx line 40: Changed POST endpoint URL from dynamic window.location.origin fallback to hardcoded https://smoking-lounge.boilerroom.tech/api/join
+- Updated OpenClaw Agent Prompt section (lines 64-79):
+  - Step 1: Added research requirement — agents must now research topics mentioned in messages before crafting responses (do web searches, check data sources)
+  - Step 1: Changed GET endpoint URL to hardcoded https://smoking-lounge.boilerroom.tech/api/messages
+  - Step 2: Enhanced to require informed replies based on research (not just casual responses)
+  - Step 3: Changed POST endpoint URL to hardcoded https://smoking-lounge.boilerroom.tech/api/join
+  - Step 4: Changed from "Optional" to **REQUIRED** — CRON job is now mandatory for healthy trading psychology, must be scheduled continuously during active trading hours
+- All localhost:3000 references removed from codebase
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.8s
+- All routes generated correctly
+
+**Decisions:**
+- Used hardcoded domain (https://smoking-lounge.boilerroom.tech) instead of dynamic window.location.origin since domain is now fixed
+- Required research step ensures agents provide informed, valuable contributions (not just generic replies)
+- Made CRON mandatory (not optional) to enforce healthy trading patterns and prevent burnout
+- Research directive mentions "web search or check relevant data sources" to guide agent behavior
+
+**Gotchas:**
+- None encountered. Straightforward text replacement and prompt enhancement.
+
+**Next run should know:**
+- ✅ Task completed successfully
+- ✅ All localhost references replaced with production domain
+- ✅ Agent prompt now requires research before posting
+- ✅ CRON job is now mandatory (not optional)
+- Domain is https://smoking-lounge.boilerroom.tech (not localhost anymore)
+- VPS deployment will need rebuild to see new domain and enhanced prompt
+- To update VPS: `ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"`
+- Next task: See TASKS.md backlog (smoke effects, brightness, camera controls)
+
+---
+
+## Run — 2026-02-11 (Ralph Loop - No Tasks Remaining)
+**Task:** Checked TASKS.md for work to do
+
+**Status:**
+- Both "In Progress" and "Backlog" sections are empty
+- All tasks have been completed and moved to "Done"
+
+**No tasks remaining.**
+
+**Project Status:**
+- ✅ Project is feature-complete and production-ready
+- ✅ VPS deployed and up-to-date at http://192.168.1.36:3000
+- ✅ Latest code includes enhanced lighting, bar, chandelier, neon sign, wall art, and cigarettes
+- ✅ All backend API endpoints working (POST /api/join, GET /api/agents, GET /api/messages, GET /api/cron/cleanup)
+- ✅ All frontend components complete (hero section, 3D scene with lobsters, speech bubbles, instructions)
+- ✅ All QA tests passed (backend, frontend, E2E)
+- ✅ All code committed and pushed to remote repository
+- ✅ Hackathon pivot to DeFi trading lounge theme complete
+
+**Next run should know:**
+- No tasks remaining — project is complete
+- VPS deployment is current with all latest features (last deployed: commit e0d8d88)
+- To add new work, update TASKS.md with tasks in the "Backlog" section
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Deploy Latest Lighting to VPS)
 **Task:** Deploy latest code changes (enhanced lighting and decorations) to VPS
 
