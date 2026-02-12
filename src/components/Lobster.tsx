@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,14 +12,73 @@ interface LobsterProps {
   message?: string;
 }
 
+// Smoke particle configuration
+const PARTICLE_COUNT = 20;
+const SMOKE_LIFETIME = 2.5; // seconds
+
 export function Lobster({ position, color, name, message }: LobsterProps) {
   const groupRef = useRef<THREE.Group>(null);
+  const smokeRef = useRef<THREE.Points>(null);
 
-  // Gentle floating animation
-  useFrame((state) => {
+  // Smoke particle state and geometry
+  const smokeParticles = useMemo(() => {
+    const particles: Array<{ age: number; offset: number }> = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        age: (i / PARTICLE_COUNT) * SMOKE_LIFETIME, // Stagger initial ages
+        offset: Math.random() * Math.PI * 2, // Random circular offset
+      });
+    }
+    return particles;
+  }, []);
+
+  const smokeGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const opacities = new Float32Array(PARTICLE_COUNT);
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('opacity', new THREE.BufferAttribute(opacities, 1));
+
+    return geometry;
+  }, []);
+
+  // Gentle floating animation + smoke particle animation
+  useFrame((state, delta) => {
     if (groupRef.current) {
       groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
       groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+    }
+
+    // Animate smoke particles
+    if (smokeRef.current) {
+      const positions = smokeRef.current.geometry.attributes.position.array as Float32Array;
+      const opacities = smokeRef.current.geometry.attributes.opacity.array as Float32Array;
+
+      smokeParticles.forEach((particle, i) => {
+        // Age the particle
+        particle.age += delta;
+        if (particle.age > SMOKE_LIFETIME) {
+          particle.age = 0; // Reset particle
+          particle.offset = Math.random() * Math.PI * 2; // New random offset
+        }
+
+        // Calculate particle position based on age
+        const progress = particle.age / SMOKE_LIFETIME;
+        const x = Math.cos(particle.offset) * 0.03 * progress; // Slight drift outward
+        const y = 0.2 + progress * 0.5; // Rise from cigarette tip
+        const z = Math.sin(particle.offset) * 0.03 * progress;
+
+        positions[i * 3] = x;
+        positions[i * 3 + 1] = y;
+        positions[i * 3 + 2] = z;
+
+        // Fade out as particle ages
+        opacities[i] = Math.max(0, 1 - progress);
+      });
+
+      smokeRef.current.geometry.attributes.position.needsUpdate = true;
+      smokeRef.current.geometry.attributes.opacity.needsUpdate = true;
     }
   });
 
@@ -146,6 +205,19 @@ export function Lobster({ position, color, name, message }: LobsterProps) {
         </mesh>
         {/* Glowing ember point light */}
         <pointLight position={[0, 0.2, 0]} color="#FF6600" intensity={0.3} distance={1.5} />
+
+        {/* Smoke particles */}
+        <points ref={smokeRef} geometry={smokeGeometry}>
+          <pointsMaterial
+            size={0.08}
+            color="#CCCCCC"
+            transparent
+            opacity={0.4}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            vertexColors={false}
+          />
+        </points>
       </group>
     </group>
   );

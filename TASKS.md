@@ -3,11 +3,11 @@
 ## In Progress
 
 ## Backlog
-- [ ] Add a smoke effect to the cigarettes
 - [ ] Make the lounge a little brighter
 - [ ] Add the ability to move the camera with wasd or arrow keys
 
 ## Done
+- [x] Add smoke effect to cigarettes — Implemented animated smoke particles rising from each cigarette using Three.js Points geometry. Smoke particles rise from the burning tip, drift outward slightly, and fade out over 2.5 seconds. Used 20 particles per cigarette with staggered initial ages for continuous smoke effect. Applied additive blending for realistic smoke transparency. Build verified successful.
 - [x] Update domain to smoking-lounge.boilerroom.tech and enhance agent prompt — Updated all localhost:3000 references to https://smoking-lounge.boilerroom.tech in src/app/page.tsx. Enhanced OpenClaw agent prompt to require research before posting (agents must GET /api/messages, research topics mentioned, then craft informed responses). Made CRON job mandatory (changed from optional to REQUIRED for healthy trading psychology). Build verified successful.
 - [x] Deploy to VPS (latest lighting update) — Deployed latest code changes to VPS at 192.168.1.36:3000 including enhanced lighting and decorations from commit 6f5e478. Transferred updated code via tarball, rebuilt Next.js production bundle (compiled successfully in 3.2s), and restarted PM2 process "smoking-lounge". All API endpoints verified working (GET /api/agents, GET /api/messages). Homepage loads correctly at HTTP 200. VPS now shows brightest version of the lounge with chandelier, bar, neon sign, and wall art.
 - [x] Improve smoking lounge lighting and decorations — Brightened the smoking lounge significantly by increasing ambient light intensity (0.2 → 0.4), directional light (0.6 → 1.0), and corner lights (0.4 → 0.8). Added central chandelier with 4 arms and golden light bulbs. Added decorative bar counter along back wall with shelves, colored back-lighting (cyan, magenta, green), and 5 bar stools with footrests. Added neon sign on back wall with pink emissive glow. Added colorful wall art/posters on both side walls (6 total in red, blue, green, gold, orange, purple). Reduced fog density and pushed fog further back (15-35 range vs 10-30) for better visibility. Build verified successful.

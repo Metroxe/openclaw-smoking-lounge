@@ -17,6 +17,50 @@
 
 -->
 
+## Run — 2026-02-11 (Ralph Loop - Add Smoke Effects)
+**Task:** Add smoke effect to cigarettes
+
+**Implementation:**
+- Updated src/components/Lobster.tsx to add animated smoke particles rising from cigarette tip
+- Used Three.js Points geometry with 20 particles per cigarette
+- Created custom BufferGeometry with position and opacity attributes in useMemo
+- Smoke particles rise from y=0.2 (cigarette tip) to y=0.7 over 2.5 second lifetime
+- Particles drift outward slightly (0.03 radius) based on random circular offset
+- Opacity fades from 1.0 to 0.0 as particles age
+- Used additive blending (THREE.AdditiveBlending) for realistic smoke transparency
+- Particles stagger initial ages to create continuous smoke stream effect
+- Animation runs in useFrame hook, updating positions and opacities every frame
+
+**Testing:**
+- Build succeeded with no TypeScript errors (npm run build)
+- Next.js compiled successfully in 2.4s
+- All routes generated correctly
+
+**Decisions:**
+- Used 20 particles per cigarette (balance between visual quality and performance)
+- Set smoke lifetime to 2.5 seconds (realistic cigarette smoke dissipation)
+- Used light gray color (#CCCCCC) for smoke particles with 0.4 base opacity
+- Applied additive blending for layered smoke transparency effect
+- Staggered particle ages on initialization to avoid visible gaps in smoke
+- Particles drift in random circular pattern (not straight up) for natural movement
+- Used depthWrite={false} to prevent z-fighting with other transparent objects
+
+**Gotchas:**
+- React Three Fiber requires BufferGeometry to be created with useMemo and passed via geometry prop
+- Cannot use declarative <bufferAttribute> syntax directly (TypeScript error)
+- Must create BufferAttribute with THREE.BufferAttribute constructor
+- Opacity attribute is custom (not built-in), but unused since we control opacity at material level
+- AdditiveBlending must be imported from THREE namespace (THREE.AdditiveBlending)
+
+**Next run should know:**
+- Smoke effect is complete at src/components/Lobster.tsx (lines 17-89, 199-208)
+- Each lobster now has animated smoke rising from cigarette
+- Next tasks in backlog: make lounge brighter, add WASD camera controls
+- VPS deployment at http://192.168.1.36:3000 will need rebuild to see smoke effect
+- To update VPS: ssh cvp@192.168.1.36 "cd ~/openclaw-smoking-lounge && git pull && npm run build && pm2 restart openclaw-smoking-lounge"
+
+---
+
 ## Run — 2026-02-11 (Ralph Loop - Update Domain and Enhance Agent Prompt)
 **Task:** Update all localhost references to https://smoking-lounge.boilerroom.tech and enhance OpenClaw agent prompt with research requirement and mandatory CRON
 
